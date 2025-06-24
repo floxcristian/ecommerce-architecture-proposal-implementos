@@ -10,8 +10,8 @@
 
 ### 🎯 Stack a Monitorear (8 hosts)
 
-- **2 hosts Frontend:** Aplicaciones web/React + Load balancer
-- **2 hosts Backend:** APIs REST/GraphQL + Microservicios
+- **2 hosts Frontend:** Ecommerce web (Angular) + CMS Administrador
+- **2 hosts Backend:** APIs REST + Microservicios
 - **2 hosts Datos:** Base de datos + Cache/Redis
 - **2 hosts Infraestructura:** Background jobs + Gateway/Proxy
 
@@ -191,25 +191,25 @@ _Hardware empresarial refurbished:_
 
 ## 📅 Plan de Implementación
 
-### Fase 1: Preparación (Semanas 1-2)
+### Fase 1: Preparación
 
 - ✅ Adquisición y configuración de hardware
 - ✅ Instalación de Prometheus y Grafana
 - ✅ Configuración de red y firewall
 
-### Fase 2: Integración (Semanas 3-4)
+### Fase 2: Integración
 
 - ✅ Configuración de endpoints en servicios GCP
 - ✅ Setup de dashboards principales
 - ✅ Configuración básica de alertas
 
-### Fase 3: Optimización (Semanas 5-6)
+### Fase 3: Optimización
 
 - ✅ Capacitación del equipo en PromQL
 - ✅ Refinamiento de métricas y alertas
 - ✅ Documentación operativa
 
-### Fase 4: Producción (Semana 7)
+### Fase 4: Producción
 
 - ✅ Go live monitoreo 24/7
 - ✅ Evaluación post-implementación
@@ -230,17 +230,9 @@ _Hardware empresarial refurbished:_
 
 **✅ Aprobación para implementar Prometheus + Grafana** con:
 
-- **Timeline:** 7 semanas implementación completa
 - **Budget:** $2,800 USD inversión única
 - **ROI:** 35-61% ahorro vs alternativas SaaS
 - **Risk:** Bajo con plan mitigación estructurado
-
-### 📞 Próximos Pasos Inmediatos
-
-1. **Aprobación gerencial** para proceder
-2. **Adquisición de hardware** empresarial recomendado
-3. **Asignación equipo DevOps** para implementación
-4. **Inicio Fase 1** próximo mes
 
 ---
 
