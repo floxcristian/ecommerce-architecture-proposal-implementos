@@ -158,37 +158,37 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 graph TB
     subgraph "☁️ Google Cloud Platform"
         direction TB
-        
+
         subgraph "🔧 Stack de Monitoreo"
             direction LR
             P["🖥️ Prometheus<br/>📊 Metrics Collection<br/>💾 Time Series DB"]
             G["📊 Grafana<br/>📈 Dashboards<br/>👁️ Visualization"]
             A["🚨 Alertmanager<br/>📢 Notifications<br/>🔔 Alert Routing"]
         end
-        
+
         subgraph "📱 Servicios de Aplicación"
             direction TB
             subgraph "🌐 Frontend Tier"
                 WEB1["🌐 Web Service 1<br/>:9090/metrics"]
                 WEB2["🌐 Web Service 2<br/>:9090/metrics"]
             end
-            
+
             subgraph "⚙️ Backend Tier"
                 API["⚙️ API Service<br/>:9090/metrics"]
                 BG["📋 Background Jobs<br/>:9090/metrics"]
             end
-            
+
             subgraph "🗄️ Data Tier"
                 DB["�️ Database<br/>:9104/metrics"]
                 CACHE["⚡ Redis Cache<br/>:9121/metrics"]
             end
         end
-        
+
         subgraph "🔄 Infrastructure"
             LB["🔄 Load Balancer<br/>GCP Monitoring API"]
         end
     end
-    
+
     %% Conexiones de scraping
     P -->|"🔄 Pull 15s"| WEB1
     P -->|"🔄 Pull 15s"| WEB2
@@ -197,17 +197,17 @@ graph TB
     P -->|"🔄 Pull 30s"| DB
     P -->|"🔄 Pull 15s"| CACHE
     P -->|"🔄 API 60s"| LB
-    
+
     %% Conexiones internas del stack de monitoreo
     P -->|"📊 Data"| G
     P -->|"🚨 Alerts"| A
     G -.->|"🔍 Query"| P
-    
+
     %% Estilos para mejor visualización
     style P fill:#2e7d32,stroke:#1b5e20,stroke-width:3px,color:#fff
     style G fill:#1565c0,stroke:#0d47a1,stroke-width:3px,color:#fff
     style A fill:#ef6c00,stroke:#e65100,stroke-width:3px,color:#fff
-    
+
     style WEB1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style WEB2 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style API fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
@@ -218,6 +218,7 @@ graph TB
 ```
 
 **Ventajas:**
+
 - ✅ **Arquitectura por capas:** Separación clara entre frontend, backend y datos
 - ✅ **Latencia mínima:** Scraping optimizado (< 5ms dentro de GCP)
 - ✅ **Escalabilidad automática:** Compute Engine auto-scaling disponible
@@ -422,34 +423,37 @@ Herramientas independientes: Prometheus + Grafana (open source)
 
 #### **Prometheus + Grafana (Solución Recomendada)**
 
-| **Riesgo** | **Probabilidad** | **Impacto** | **Mitigación Específica** |
-|------------|------------------|-------------|----------------------------|
-| **Curva de aprendizaje del equipo** | Media | Bajo | • Capacitación de 40hrs (incluida en costos)<br/>• Documentación técnica completa<br/>• Soporte comunidad CNCF 24/7 |
-| **Complejidad inicial de setup** | Alta | Medio | • Implementación por fases (7 semanas)<br/>• POC en ambiente de desarrollo<br/>• Soporte técnico externo inicial |
-| **Disponibilidad del servicio** | Baja | Alto | • Configuración HA con 2+ instancias<br/>• Backups automatizados diarios<br/>• Monitoring del monitoring (meta-alertas) |
-| **Escalabilidad futura** | Baja | Medio | • Arquitectura federada preparada<br/>• Thanos para storage a largo plazo<br/>• Revisión trimestral de capacity planning |
+| **Riesgo**                          | **Probabilidad** | **Impacto** | **Mitigación Específica**                                                                                                |
+| ----------------------------------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Curva de aprendizaje del equipo** | Media            | Bajo        | • Capacitación de 40hrs (incluida en costos)<br/>• Documentación técnica completa<br/>• Soporte comunidad CNCF 24/7      |
+| **Complejidad inicial de setup**    | Alta             | Medio       | • Implementación por fases (7 semanas)<br/>• POC en ambiente de desarrollo<br/>• Soporte técnico externo inicial         |
+| **Disponibilidad del servicio**     | Baja             | Alto        | • Configuración HA con 2+ instancias<br/>• Backups automatizados diarios<br/>• Monitoring del monitoring (meta-alertas)  |
+| **Escalabilidad futura**            | Baja             | Medio       | • Arquitectura federada preparada<br/>• Thanos para storage a largo plazo<br/>• Revisión trimestral de capacity planning |
 
 #### **DataDog/New Relic (Alternativas SaaS)**
 
-| **Riesgo** | **Probabilidad** | **Impacto** | **Consecuencia** |
-|------------|------------------|-------------|------------------|
-| **Vendor lock-in tecnológico** | **Alta** | **Crítico** | • Migración futura: 6-12 meses + $15K USD<br/>• Dependencia total del proveedor<br/>• Sin control sobre roadmap del producto |
-| **Aumentos de precio anuales** | Alta | Alto | • Incrementos típicos: 15-25% anual<br/>• Sin alternativas una vez implementado<br/>• Costos imprevisibles a largo plazo |
-| **Límites de métricas custom** | Media | Medio | • Costos adicionales por métrica<br/>• Restricciones en observabilidad<br/>• Facturación por volumen de datos |
+| **Riesgo**                     | **Probabilidad** | **Impacto** | **Consecuencia**                                                                                                             |
+| ------------------------------ | ---------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Vendor lock-in tecnológico** | **Alta**         | **Crítico** | • Migración futura: 6-12 meses + $15K USD<br/>• Dependencia total del proveedor<br/>• Sin control sobre roadmap del producto |
+| **Aumentos de precio anuales** | Alta             | Alto        | • Incrementos típicos: 15-25% anual<br/>• Sin alternativas una vez implementado<br/>• Costos imprevisibles a largo plazo     |
+| **Límites de métricas custom** | Media            | Medio       | • Costos adicionales por métrica<br/>• Restricciones en observabilidad<br/>• Facturación por volumen de datos                |
 
 ### 🛡️ Plan de Mitigación de Riesgos
 
 #### **Fase de Implementación (Semanas 1-7)**
+
 - **Backup strategy:** Mantener logging básico existente durante transición
 - **Rollback plan:** Capacidad de volver al estado anterior en 24hrs
 - **Testing exhaustivo:** Validación en ambiente no-productivo primero
 
 #### **Operación a Largo Plazo**
+
 - **Monitoreo de rendimiento:** Alertas sobre la propia infraestructura de monitoreo
 - **Actualizaciones controladas:** Ciclo de updates cada 3 meses con testing
 - **Disaster recovery:** Procedimientos documentados para recuperación completa
 
 #### **Mitigación Financiera**
+
 - **Presupuesto de contingencia:** 20% adicional para imprevistos del primer año
 - **ROI tracking:** Seguimiento mensual de ahorros vs alternativas SaaS
 - **Escalabilidad predictiva:** Modelado de costos para 2-3 años futuros
@@ -457,7 +461,7 @@ Herramientas independientes: Prometheus + Grafana (open source)
 ### 💡 Factores de Éxito Críticos
 
 1. **Compromiso del equipo técnico** - Dedicación de 2-3 personas durante implementación
-2. **Soporte gerencial** - Respaldo durante curva de aprendizaje inicial  
+2. **Soporte gerencial** - Respaldo durante curva de aprendizaje inicial
 3. **Implementación gradual** - No migrar todo al mismo tiempo
 4. **Documentación completa** - Procedimientos operativos desde día uno
 5. **Comunidad y soporte** - Aprovechar ecosistema CNCF y foros especializados
