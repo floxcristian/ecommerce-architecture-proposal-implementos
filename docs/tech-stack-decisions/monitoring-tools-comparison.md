@@ -8,12 +8,12 @@
 
 **☁️ Estrategia Híbrida:** Apps críticas en GCP + Monitoreo on-premises = Máxima optimización de costos.
 
-### 🎯 Stack a Monitorear (8 hosts)
+### 🎯 Stack a Monitorear (8 hosts/pods)
 
-- **2 hosts Frontend:** Ecommerce web (Angular) + CMS Administrador
-- **2 hosts Backend:** APIs REST + Microservicios
+- **2 pods Frontend:** Ecommerce web (Angular) + CMS Administrador
+- **2 pods Backend:** APIs REST + Microservicios
 - **2 hosts Datos:** Base de datos + Cache/Redis
-- **2 hosts Infraestructura:** Background jobs + Gateway/Proxy
+- **2 componentes Infraestructura:** Background jobs + Ingress Controller
 
 ### 📊 Resumen Financiero (3 años)
 
