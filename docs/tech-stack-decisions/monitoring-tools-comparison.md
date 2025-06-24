@@ -4,9 +4,9 @@
 
 Este documento presenta un análisis comparativo entre tres plataformas líderes de monitoreo y observabilidad: **Prometheus**, **DataDog** y **New Relic**, con foco en nuestra infraestructura actual en **Google Cloud Platform (GCP)** y los objetivos estratégicos de independencia tecnológica.
 
-**🎯 Recomendación:** Adopción de **Prometheus + Grafana** como solución de monitoreo unificada.
+**🎯 Recomendación:** Adopción de **Prometheus + Grafana** en infraestructura **on-premises** como solución de monitoreo.
 
-**💰 Impacto financiero:** Ahorro de $9.6K-11.8K USD en 3 años vs alternativas SaaS.
+**💰 Impacto financiero:** Estrategia híbrida óptima - apps críticas en GCP, monitoreo on-premises. **Prometheus 35% más barato** que DataDog ($3.4K vs $5.2K en 3 años) con independencia total.
 
 ### 🎯 Objetivos Estratégicos
 
@@ -17,11 +17,9 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 ---
 
-## 🏗️ Contexto: Situación Actual
+## 🏗️ Contexto
 
 ### 📊 Estado de la Infraestructura
-
-**Situación conocida:**
 
 - **Servicios en producción** desplegados en **Google Cloud Platform (GCP)**
 - **Necesidad identificada:** Implementar monitoreo robusto y escalable
@@ -29,7 +27,7 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 ### 🎯 Necesidades de Monitoreo Identificadas
 
-- **Observabilidad completa** de servicios GCP
+- **Observabilidad completa** de servicios y apps en GCP
 - **Alertas proactivas** para prevenir incidentes
 - **Métricas de rendimiento** para optimización
 - **Independencia de proveedores** para flexibilidad futura
@@ -80,71 +78,107 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 ### 📊 Proyección de Costos por Escenario
 
-**Escenario Base:** Monitoreo de servicios típicos en GCP (5-10 instancias/servicios)
+**Escenario Base:** Monitoreo de stack completo en GCP (8 hosts/servicios)
 
-| Año               | **Prometheus + Grafana** | **DataDog**     | **New Relic**   |
-| ----------------- | ------------------------ | --------------- | --------------- |
-| **Año 0 (Setup)** | $3,500 USD (una vez)     | $0              | $0              |
-| **Año 1**         | $0 USD                   | $3,600 USD      | $4,200 USD      |
-| **Año 2**         | $0 USD                   | $4,320 USD      | $5,040 USD      |
-| **Año 3**         | $0 USD                   | $5,184 USD      | $6,048 USD      |
-| **Total 3 años**  | **$3,500 USD**           | **$13,104 USD** | **$15,288 USD** |
+**Desglose de los 8 hosts a monitorear:**
+- **2 hosts Frontend:** Aplicaciones web/React (load balancer + app server)
+- **2 hosts Backend API:** Servicios REST/GraphQL (microservicios principales)
+- **1 host Base de datos:** Cloud SQL/PostgreSQL (instancia principal + réplicas)
+- **1 host Cache/Redis:** Almacenamiento en memoria para sesiones y cache
+- **1 host Background Jobs:** Workers para procesamiento asíncrono (queues, emails, etc.)
+- **1 host Gateway/Proxy:** Nginx/Kong para routing y SSL termination
 
-> **Nota:** Costos basados en 5-10 hosts/servicios típicos para una implementación inicial en GCP
+| Año               | **Prometheus + Grafana** | **DataDog**    | **New Relic**  |
+| ----------------- | ------------------------ | -------------- | -------------- |
+| **Año 0 (Setup)** | $2,800 USD (una vez)     | $0             | $0             |
+| **Año 1**         | $200 USD                 | $1,440 USD     | $2,400 USD     |
+| **Año 2**         | $200 USD                 | $1,728 USD     | $2,880 USD     |
+| **Año 3**         | $200 USD                 | $2,074 USD     | $3,456 USD     |
+| **Total 3 años**  | **$3,400 USD**           | **$5,242 USD** | **$8,736 USD** |
 
-### 💡 ROI y Ahorros Proyectados
-
-- **Ahorro vs DataDog:** $9,604 USD (73% ahorro)
-- **Ahorro vs New Relic:** $11,788 USD (77% ahorro)
-- **ROI en 3 años:** 274% vs DataDog
-- **Punto de equilibrio:** 10 meses vs DataDog
+> **Nota:** Prometheus basado en infraestructura on-premises (recomendado para reducir costos cloud). DataDog/New Relic facturan por host/agente + crecimiento anual 20%.
 
 ### 🎯 Desglose de Costos por Solución
 
 #### **Prometheus + Grafana**
 
-**Opciones de implementación:**
+**Opciones de implementación y costos detallados:**
 
-**Opción A: Self-managed en GCP**
+**Opción A: Infraestructura on-premises** ⭐ Recomendado
 
-- Compute Engine instance (e2-standard-2): $100 USD/mes
-- **Costo 3 años:** $3,600 USD
+_Especificaciones de servidor empresarial para $2,800 USD:_
 
-**Opción B: Google Kubernetes Engine (GKE)**
+- **Servidor:** Dell PowerEdge T140 o HP ProLiant ML30 Gen10 (reacondicionado/refurbished)
+- **CPU:** Intel Xeon E-2224 (4-core, 3.4GHz) o AMD EPYC 3251 (8-core)
+- **RAM:** 16GB ECC DDR4 (expandible hasta 64GB)
+- **Storage:** 1TB enterprise SSD (SATA) para datos + 256GB SSD para OS
+- **RAID:** Controladora RAID 1 por redundancia
+- **Networking:** Dual Gigabit Ethernet (redundancia de red)
+- **PSU:** Fuente redundante 550W
+- **Garantía:** 1 año de soporte técnico incluido
+- **Costo inicial:** $2,800 USD (servidor + configuración inicial)
+- **Mantenimiento anual:** $200 USD/año (electricidad, cooling, soporte extendido)
+- **Costo 3 años:** $3,400 USD
+- **Justificación:** Hardware empresarial con redundancia, ECC RAM y confiabilidad 24/7
 
-- GKE cluster pequeño: $85 USD/mes
-- **Costo 3 años:** $3,060 USD
+**💡 Justificación técnica del servidor empresarial:**
 
-**Opción C: Infraestructura propia**
+- **CPU Xeon/EPYC:** Procesadores diseñados para cargas 24/7 con mejor gestión térmica que CPUs consumer
+- **ECC RAM:** Memoria con corrección de errores, crítica para aplicaciones que corren continuamente
+- **Enterprise SSD:** Drives con mayor endurance (DWPD) y confiabilidad para escrituras constantes de métricas
+- **RAID 1:** Redundancia de storage para evitar pérdida de datos históricos de monitoreo
+- **Dual NIC:** Redundancia de red para garantizar conectividad con GCP
+- **Servidor refurbished:** Equipos empresariales de 1-2 años con garantía, precio accesible vs nuevos
+- **Capacidad actual:** Maneja cómodamente los 8 hosts del stack (frontend, backend, DB, cache, jobs, proxy)
+- **Escalabilidad:** Puede crecer hasta 15-25 hosts con retención de 12 meses de métricas
 
-- Hardware dedicado: $1,500 USD (una vez)
-- **Costo 3 años:** $1,500 USD
+**Opción B: Self-managed en GCP**
 
-**Costos de implementación:**
+_Especificaciones técnicas:_
 
-- Instalación y configuración: $2,000 USD (una vez)
-- Capacitación del equipo: $1,500 USD (una vez)
-- **Setup total:** $3,500 USD
+- **Instancia:** Compute Engine e2-standard-4 (4 vCPUs, 16GB RAM)
+- **Storage:** 200GB SSD persistente (para 6 meses de métricas)
+- **Networking:** Standard tier, tráfico interno GCP
+- **Costo mensual:** $120 USD
+- **Costo 3 años:** $4,320 USD
+- **Consideración:** Buena opción si se prefiere mantener todo en cloud
+
+**Opción C: Google Kubernetes Engine (GKE)**
+
+_Especificaciones técnicas:_
+
+- **Cluster:** 2 nodos e2-standard-2 (2 vCPUs, 8GB RAM cada uno)
+- **Storage:** 100GB SSD por nodo (total 200GB)
+- **GKE management fee:** $72.50/mes (cluster)
+- **Costo mensual:** $140 USD (nodos) + $72.50 (management) = $212.50 USD
+- **Costo 3 años:** $7,650 USD
+- **Consideración:** Opción más cara, solo si se requiere alta disponibilidad
+
+**Costo total recomendado (Opción A on-premises):**
+
+- **Inversión inicial:** $2,800 USD (solo hardware)
+- **Operación 3 años:** $600 USD (mantenimiento)
+- **Total 3 años:** $3,400 USD
 
 #### **DataDog (SaaS)**
 
 **Modelo de pricing realista:**
 
 - **Plan Infrastructure:** $15 USD/host/mes
-- **5-10 hosts estimados:** $75-150 USD/mes iniciales
-- **Promedio:** $300 USD/mes ($3,600/año)
-- **Crecimiento anual:** +20% (más servicios)
-- **Fees adicionales:** Logs, APM, métricas custom (+$50-100/mes)
+- **8 hosts stack completo:** $120 USD/mes base (frontend + backend + DB + cache + jobs + proxy)
+- **Año 1:** $1,440 USD
+- **Crecimiento anual:** +20% (más servicios = más hosts)
+- **Fees adicionales:** Logs, APM, métricas custom (+$30-50/mes adicionales típicos)
 
 #### **New Relic (SaaS)**
 
 **Modelo de pricing realista:**
 
 - **Plan Standard:** $25 USD/host/mes
-- **5-10 hosts estimados:** $125-250 USD/mes iniciales
-- **Promedio:** $350 USD/mes ($4,200/año)
-- **Crecimiento anual:** +20% (más servicios)
-- **Fees adicionales:** APM Pro features (+$100-150/mes)
+- **8 hosts stack completo:** $200 USD/mes base (frontend + backend + DB + cache + jobs + proxy)
+- **Año 1:** $2,400 USD
+- **Crecimiento anual:** +20% (más servicios = más hosts)
+- **Fees adicionales:** APM Pro features (+$50-80/mes adicionales típicos)
 
 ---
 
@@ -152,20 +186,22 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 ### 📊 Alternativas de Deployment para Prometheus + Grafana
 
-#### **Opción A: Self-managed en GCP** ⭐ Recomendado
+#### **Opción A: Infraestructura on-premises** ⭐ Recomendado
 
 ```mermaid
 graph TB
-    subgraph "☁️ Google Cloud Platform"
+    subgraph "🏢 On-Premises Infrastructure"
         direction TB
-
         subgraph "🔧 Stack de Monitoreo"
             direction LR
             P["🖥️ Prometheus<br/>📊 Metrics Collection<br/>💾 Time Series DB"]
             G["📊 Grafana<br/>📈 Dashboards<br/>👁️ Visualization"]
             A["🚨 Alertmanager<br/>📢 Notifications<br/>🔔 Alert Routing"]
         end
+    end
 
+    subgraph "☁️ Google Cloud Platform"
+        direction TB
         subgraph "📱 Servicios de Aplicación"
             direction TB
             subgraph "🌐 Frontend Tier"
@@ -179,7 +215,7 @@ graph TB
             end
 
             subgraph "🗄️ Data Tier"
-                DB["�️ Database<br/>:9104/metrics"]
+                DB["🗄️ Database<br/>:9104/metrics"]
                 CACHE["⚡ Redis Cache<br/>:9121/metrics"]
             end
         end
@@ -189,14 +225,19 @@ graph TB
         end
     end
 
-    %% Conexiones de scraping
-    P -->|"🔄 Pull 15s"| WEB1
-    P -->|"🔄 Pull 15s"| WEB2
-    P -->|"🔄 Pull 30s"| API
-    P -->|"🔄 Pull 30s"| BG
-    P -->|"🔄 Pull 30s"| DB
-    P -->|"🔄 Pull 15s"| CACHE
-    P -->|"🔄 API 60s"| LB
+    subgraph "🌐 Conectividad"
+        VPN["🔗 VPN/Interconnect<br/>Conexión segura"]
+    end
+
+    %% Conexiones a través de VPN
+    P -->|"🔄 Pull via VPN"| VPN
+    VPN -->|"📊 Metrics"| WEB1
+    VPN -->|"� Metrics"| WEB2
+    VPN -->|"� Metrics"| API
+    VPN -->|"� Metrics"| BG
+    VPN -->|"� Metrics"| DB
+    VPN -->|"� Metrics"| CACHE
+    VPN -->|"� API"| LB
 
     %% Conexiones internas del stack de monitoreo
     P -->|"📊 Data"| G
@@ -207,6 +248,7 @@ graph TB
     style P fill:#2e7d32,stroke:#1b5e20,stroke-width:3px,color:#fff
     style G fill:#1565c0,stroke:#0d47a1,stroke-width:3px,color:#fff
     style A fill:#ef6c00,stroke:#e65100,stroke-width:3px,color:#fff
+    style VPN fill:#9c27b0,stroke:#6a1b9a,stroke-width:3px,color:#fff
 
     style WEB1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style WEB2 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
@@ -216,31 +258,33 @@ graph TB
     style CACHE fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style LB fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
 ```
+    style LB fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+```
 
 **Ventajas:**
 
-- ✅ **Arquitectura por capas:** Separación clara entre frontend, backend y datos
-- ✅ **Latencia mínima:** Scraping optimizado (< 5ms dentro de GCP)
-- ✅ **Escalabilidad automática:** Compute Engine auto-scaling disponible
-- ✅ **Visibilidad completa:** Monitoreo de toda la stack de aplicación
-- ✅ **Costos optimizados:** Aprovecha infraestructura GCP existente
-- ✅ Escalabilidad automática disponible
+- ✅ **Estrategia híbrida óptima:** Apps críticas en cloud, monitoreo on-premises
+- ✅ **Máximo ahorro:** $3,400 vs $4,320 (GCP) - ahorro de $920 USD
+- ✅ **Conectividad segura:** VPN/Interconnect establecido para recolección de métricas
+- ✅ **Control total:** Hardware y configuración completamente bajo control interno
+- ✅ **Escalabilidad predecible:** Upgrades de hardware según necesidades reales
+- ✅ **Independencia cloud:** Monitoreo no depende de costos variables de GCP
 
-#### **Opción B: Google Kubernetes Engine (GKE)**
+#### **Opción B: Self-managed en GCP**
 
 **Ventajas:**
 
-- ✅ Contenedores nativos cloud
-- ✅ Auto-escalado según demanda
+- ✅ Todo en un mismo proveedor cloud
+- ✅ Latencia mínima entre monitoreo y aplicaciones
 - ✅ Integración directa con GCP services
 
-#### **Opción C: Infraestructura Externa**
+#### **Opción C: Google Kubernetes Engine (GKE)**
 
 **Consideraciones:**
 
-- ⚠️ Requiere conectividad estable a GCP
-- ⚠️ Latencia adicional para métricas
-- ⚠️ Complejidad de networking
+- ⚠️ Opción más cara ($7,650 vs $3,400 on-premises)
+- ⚠️ Complejidad adicional de Kubernetes para monitoreo
+- ⚠️ Solo justificable si se requiere alta disponibilidad extrema
 
 ### 🔧 Especificaciones Técnicas Recomendadas
 
@@ -343,7 +387,7 @@ Herramientas independientes: Prometheus + Grafana (open source)
 
 | Aspecto                         | **Con DataDog (Lock-in)**     | **Con Prometheus (Independiente)** |
 | ------------------------------- | ----------------------------- | ---------------------------------- |
-| **Migración futura**            | 4-8 meses + $15K+ USD         | 2-4 semanas + $2K USD              |
+| **Migración futura**            | 4-8 meses + $8K+ USD          | 2-4 semanas + $2K USD              |
 | **Cambio de cloud**             | Reescribir monitoreo completo | Prometheus migra automáticamente   |
 | **Negociación precios**         | Sin alternativas viables      | Múltiples opciones disponibles     |
 | **Adopción nuevas tecnologías** | Limitado a ecosystem DataDog  | Acceso a todo el ecosystem CNCF    |
@@ -474,7 +518,7 @@ Herramientas independientes: Prometheus + Grafana (open source)
 
 ```mermaid
 flowchart TD
-    START([🎯 Necesidad de Monitoreo<br/>GCP Services]) --> Q1{¿Presupuesto<br/>$20K+ anuales?}
+    START([🎯 Necesidad de Monitoreo<br/>GCP Services]) --> Q1{¿Presupuesto<br/>$5K+ en 3 años?}
 
     Q1 -->|Sí| Q2{¿Implementación<br/>inmediata < 1 semana?}
     Q1 -->|No| PROM[✅ Prometheus + Grafana<br/>$3.5K una vez]
@@ -491,7 +535,7 @@ flowchart TD
     Q5 -->|Sí| PROM
     Q5 -->|No| DD
 
-    PROM --> RESULT1[🎯 RECOMENDADO<br/>• 73% ahorro<br/>• Independencia total<br/>• Escalabilidad]
+    PROM --> RESULT1[🎯 RECOMENDADO<br/>• 33-60% ahorro<br/>• Independencia total<br/>• Escalabilidad]
     DD --> RESULT2[⚠️ Premium Option<br/>• Plug & play<br/>• Soporte 24/7<br/>• Vendor lock-in]
     NR --> RESULT3[⚠️ Nicho APM<br/>• Enfoque específico<br/>• Mayor costo<br/>• Lock-in elevado]
 
@@ -517,7 +561,7 @@ flowchart TD
 **Considerar solo si:**
 
 - ⚠️ Se requiere implementación inmediata (< 1 semana)
-- ⚠️ Presupuesto permite $13K+ USD en 3 años
+- ⚠️ Presupuesto permite $5K+ USD en 3 años
 - ⚠️ Equipo técnico limitado para herramientas open-source
 
 ### 🏢 **New Relic** - Nicho Específico
@@ -526,7 +570,7 @@ flowchart TD
 
 - ⚠️ Foco exclusivo en APM (Application Performance Monitoring)
 - ⚠️ Ya existe ecosistema New Relic en la organización
-- ⚠️ Presupuesto permite $15K+ USD en 3 años
+- ⚠️ Presupuesto permite $9K+ USD en 3 años
 
 ---
 
@@ -534,7 +578,7 @@ flowchart TD
 
 ### 📈 **Impacto Empresarial de la Decisión**
 
-- **Ahorro financiero:** $9.6K-11.8K USD en 3 años
+- **Ahorro financiero:** $1.7K-5.2K USD en 3 años
 - **Independencia estratégica:** Eliminación de vendor lock-in
 - **Escalabilidad técnica:** Preparación para crecimiento futuro
 - **Competencia técnica:** Dominio de herramientas industry-standard
@@ -544,7 +588,7 @@ flowchart TD
 **Aprobación para implementar Prometheus + Grafana** como plataforma unificada de monitoreo, con:
 
 - **Timeline:** 7 semanas para implementación completa
-- **Budget:** $3,500 USD inversión única vs $13K-15K USD en 3 años
+- **Budget:** $2,800 USD inversión única vs $5K-9K USD en 3 años
 - **ROI:** 274% comparado con soluciones SaaS
 - **Risk:** Bajo, con plan de mitigación estructurado
 
@@ -587,3 +631,25 @@ timeline
 4. **Calendario de implementación:** Inicio propuesto próximo mes
 
 ---
+
+### 💡 Estrategia Híbrida: Apps en GCP + Monitoreo On-Premises
+
+**Justificación empresarial:**
+
+- **Apps críticas en GCP:** Servicios de producción requieren alta disponibilidad y escalabilidad cloud
+- **Monitoreo on-premises:** No es crítico como las apps, permite ahorrar significativamente en costos cloud
+- **Conectividad:** VPN/interconnect entre GCP y on-premises para recolección de métricas
+- **Backup strategy:** Si on-premises falla, métricas básicas disponibles en GCP Cloud Monitoring
+
+**Ventajas de esta estrategia:**
+
+- ✅ **Ahorro sustancial:** Evita $4,320 USD en costos GCP vs solo $3,400 USD en hardware on-premises
+- ✅ **Flexibilidad:** Control total sobre hardware y configuración de monitoreo
+- ✅ **Escalabilidad:** Hardware puede crecer según necesidades reales
+- ✅ **Aprendizaje:** Equipo gana experiencia en gestión de Prometheus/Grafana
+
+**Consideraciones técnicas:**
+
+- ⚠️ **Latencia:** ~50-100ms adicionales para métricas vs monitoreo en GCP
+- ⚠️ **Conectividad:** Requiere VPN estable entre on-premises y GCP
+- ⚠️ **Disponibilidad:** 99.5% (vs 99.9% en GCP) - aceptable para monitoreo no-crítico
