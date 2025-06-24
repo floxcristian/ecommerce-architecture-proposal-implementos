@@ -46,33 +46,113 @@ Este documento presenta un análisis técnico-empresarial para la selección de 
 
 ### Propuesta: Arquitectura Híbrida
 
-```
-Internet
-    ↓
-Google Cloud Load Balancer (L7) ← Tráfico externo
-    ↓
-GKE Cluster
-    ↓
-Traefik (IngressController) ← Tráfico interno entre servicios
-    ↓
-Microservicios (Pods)
+```mermaid
+graph TB
+    Internet[🌐 Internet - Usuarios/Clientes]
+
+    subgraph GCP[Google Cloud Platform]
+        subgraph EdgeServices[Edge Services]
+            CloudCDN[☁️ Google Cloud CDN - Cache Global]
+            CloudArmor[🛡️ Google Cloud Armor - DDoS Protection]
+            GCLB[⚖️ Google Cloud Load Balancer - L7 HTTPS LB]
+        end
+
+        subgraph GKECluster[GKE Cluster - Production]
+            Traefik[🚦 Traefik - Ingress Controller - Service Discovery]
+
+            subgraph EcommerceServices[E-commerce Services]
+                Frontend[🎨 Frontend - React/Next.js]
+                API[🔌 API Gateway - GraphQL/REST]
+                Auth[🔐 Auth Service - OAuth2/JWT]
+                Products[📦 Products Service - Catalog Management]
+                Orders[🛒 Orders Service - Order Processing]
+                Payments[💳 Payments Service - Payment Gateway]
+                Inventory[📊 Inventory Service - Stock Management]
+            end
+        end
+
+        subgraph DataLayer[Data Layer]
+            CloudSQL[🗄️ Cloud SQL - PostgreSQL]
+            Firestore[🔥 Firestore - NoSQL Documents]
+            Redis[⚡ Redis - Cache/Sessions]
+        end
+
+        subgraph Observability[Monitoring & Observability]
+            CloudMonitoring[📊 Cloud Monitoring - Metrics & Alerting]
+            CloudLogging[📝 Cloud Logging - Centralized Logs]
+            CloudTrace[🔍 Cloud Trace - Distributed Tracing]
+        end
+    end
+
+    Internet --> CloudCDN
+    CloudCDN --> CloudArmor
+    CloudArmor --> GCLB
+    GCLB --> Traefik
+
+    Traefik --> Frontend
+    Traefik --> API
+    Traefik --> Auth
+
+    API --> Products
+    API --> Orders
+    API --> Payments
+    API --> Inventory
+
+    Products --> CloudSQL
+    Orders --> CloudSQL
+    Payments --> CloudSQL
+    Inventory --> CloudSQL
+
+    Auth --> Redis
+    Frontend --> Redis
+
+    Orders --> Firestore
+    Products --> Firestore
+
+    Traefik -.-> CloudMonitoring
+    Traefik -.-> CloudLogging
+    API -.-> CloudTrace
+
+    style Traefik fill:#326ce5,stroke:#fff,stroke-width:3px,color:#fff
+    style GCLB fill:#4285f4,stroke:#fff,stroke-width:2px,color:#fff
+    style CloudCDN fill:#34a853,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
 ### Componentes y Justificación
 
+**Aclaración Importante**: Todos los servicios mencionados son **servicios nativos de Google Cloud Platform**:
+
 1. **Google Cloud Load Balancer (Externo)**
 
+   - Servicio administrado de GCP para balanceo de carga global
    - Maneja tráfico desde Internet
    - SSL Termination con Google Managed Certificates
    - DDoS protection nativo
-   - Integración con Cloud CDN
+   - Integración con Google Cloud CDN
    - Facturación por uso (no por instancias)
 
-2. **Traefik (Interno - GKE)**
-   - Service discovery automático en Kubernetes
+2. **Google Cloud CDN**
+
+   - CDN nativo de Google Cloud Platform
+   - Integración directa con Google Cloud Load Balancer
+   - 130+ ubicaciones de borde globalmente
+   - Cache invalidation automática
+   - Compresión automática (Brotli, gzip)
+   - Análisis detallado integrado con Cloud Monitoring
+
+3. **Google Cloud Armor**
+
+   - Servicio de seguridad y DDoS protection de GCP
+   - WAF (Web Application Firewall) integrado
+   - Reglas de seguridad personalizables
+   - Protección contra ataques OWASP Top 10
+   - Integración nativa con otros servicios de GCP
+
+4. **Traefik (Interno - GKE)**
+   - Service discovery automático en Kubernetes/GKE
    - Routing inteligente entre microservicios
    - Middlewares para autenticación, rate limiting, etc.
-   - Métricas y observabilidad integrada
+   - Métricas y observabilidad integrada con Google Cloud Monitoring
 
 ---
 
@@ -123,26 +203,35 @@ Microservicios (Pods)
 
 ## 🎯 Plan de Implementación
 
-### Fase 1: Setup Inicial (Sprint 1-2)
+### Timeline de Implementación
 
-- [ ] Configuración de Traefik en GKE
-- [ ] Integración con Google Cloud Load Balancer
-- [ ] Configuración de certificados SSL automáticos
-- [ ] Setup básico de observabilidad
+```mermaid
+gantt
+    title Roadmap de Implementación - Traefik en GCP
+    dateFormat  YYYY-MM-DD
+    section Preparación
+    Análisis técnico                :done,    prep1, 2025-06-23, 2025-06-30
+    Aprobación jefatura             :active,  prep2, 2025-06-30, 2025-07-07
+    Asignación recursos             :         prep3, 2025-07-07, 2025-07-14
 
-### Fase 2: Migración Gradual (Sprint 3-4)
+    section Fase 1: Setup Inicial
+    Setup GKE cluster               :         phase1-1, 2025-07-14, 2025-07-21
+    Instalación Traefik             :         phase1-2, 2025-07-21, 2025-07-28
+    Configuración SSL               :         phase1-3, 2025-07-28, 2025-08-04
+    Setup observabilidad            :         phase1-4, 2025-08-04, 2025-08-11
 
-- [ ] Migración de servicios críticos
-- [ ] Configuración de middlewares de seguridad
-- [ ] Implementación de circuit breakers
-- [ ] Testing de carga y performance
+    section Fase 2: Migración
+    Migración servicio auth         :         phase2-1, 2025-08-11, 2025-08-18
+    Migración API gateway           :         phase2-2, 2025-08-18, 2025-08-25
+    Migración microservicios        :         phase2-3, 2025-08-25, 2025-09-01
+    Testing de carga               :         phase2-4, 2025-09-01, 2025-09-08
 
-### Fase 3: Optimización (Sprint 5-6)
-
-- [ ] Fine-tuning de configuraciones
-- [ ] Implementación de métricas avanzadas
-- [ ] Documentación y training del equipo
-- [ ] Automatización completa CI/CD
+    section Fase 3: Optimización
+    Fine-tuning configuración      :         phase3-1, 2025-09-08, 2025-09-15
+    Métricas avanzadas             :         phase3-2, 2025-09-15, 2025-09-22
+    Documentación y training       :         phase3-3, 2025-09-22, 2025-09-29
+    Go-live producción             :crit,    phase3-4, 2025-09-29, 2025-10-06
+```
 
 ---
 
@@ -177,12 +266,142 @@ Microservicios (Pods)
 
 ## 🔄 Estrategia de Rollback
 
-En caso de problemas durante la implementación:
+### Estados de Despliegue y Rollback
 
-1. **Rollback inmediato**: Switch de tráfico a configuración anterior (< 5 minutos)
-2. **Canary deployment**: Implementación gradual por porcentaje de tráfico
-3. **Blue-Green**: Ambiente paralelo para testing completo
-4. **Monitoring continuo**: Alertas automáticas en caso de degradación
+```mermaid
+stateDiagram-v2
+    [*] --> PreProduction: Desarrollo completado
+
+    PreProduction --> CanaryDeployment: Testing exitoso
+    PreProduction --> [*]: Rollback a desarrollo
+
+    CanaryDeployment --> BlueGreenTest: 5% tráfico OK
+    CanaryDeployment --> PreProduction: Issues detectados
+
+    BlueGreenTest --> PartialRollout: 25% tráfico OK
+    BlueGreenTest --> CanaryDeployment: Performance issues
+
+    PartialRollout --> FullProduction: 50% tráfico OK
+    PartialRollout --> BlueGreenTest: Rollback parcial
+
+    FullProduction --> [*]: Implementación exitosa
+    FullProduction --> EmergencyRollback: Critical issues
+
+    EmergencyRollback --> PreProduction: Rollback completo
+
+    state FullProduction {
+        [*] --> Monitoring
+        Monitoring --> AlertTriggered: Error rate > 1%
+        AlertTriggered --> AutoRollback: Automatic response
+        AutoRollback --> Monitoring: System stabilized
+    }
+```
+
+### Procedimiento de Rollback Automático
+
+```mermaid
+flowchart TD
+    A[🚨 Alert Triggered] --> B{Error Rate > 5%?}
+    B -->|Yes| C[🔴 Emergency Rollback]
+    B -->|No| D{Response Time > 2s?}
+
+    D -->|Yes| E[🟡 Gradual Rollback]
+    D -->|No| F{Memory Usage > 90%?}
+
+    F -->|Yes| G[⚠️ Scale Down New Version]
+    F -->|No| H[✅ Continue Monitoring]
+
+    C --> I[Switch to Previous Version]
+    E --> J[Reduce Traffic to 25%]
+    G --> K[Monitor Performance]
+
+    I --> L[📧 Notify Team]
+    J --> M[Monitor for 15 min]
+    K --> N{Performance OK?}
+
+    M --> O{Issues Resolved?}
+    O -->|No| C
+    O -->|Yes| P[📈 Increase Traffic]
+
+    N -->|No| E
+    N -->|Yes| H
+
+    P --> H
+```
+
+---
+
+## 📊 Monitoreo y Observabilidad
+
+### Dashboard de Métricas en Tiempo Real
+
+```mermaid
+graph TB
+    subgraph FuentesDatos[Fuentes de Datos]
+        Traefik[🚦 Traefik Metrics - Request count - Response time - Error rate - SSL cert status]
+
+        GKE[☸️ GKE Metrics - Pod status - Resource usage - Node health - Network traffic]
+
+        GCP[☁️ GCP Services - Google Cloud Load Balancer metrics - Google Cloud CDN performance - Cloud SQL stats - Firestore metrics]
+    end
+
+    subgraph Procesamiento[Procesamiento]
+        Prometheus[📊 Prometheus - Metrics Collection]
+        CloudMonitoring[📈 Cloud Monitoring - Native GCP Metrics]
+    end
+
+    subgraph Visualizacion[Visualización]
+        TraefikDash[🖥️ Traefik Dashboard - Real-time routing]
+        Grafana[📊 Grafana - Custom dashboards]
+        GCPConsole[☁️ GCP Console - Integrated monitoring]
+    end
+
+    subgraph Alerting[Alerting]
+        PagerDuty[📱 PagerDuty - On-call alerts]
+        Slack[💬 Slack - Team notifications]
+        Email[📧 Email - Non-critical alerts]
+    end
+
+    Traefik --> Prometheus
+    Traefik --> TraefikDash
+    GKE --> CloudMonitoring
+    GCP --> CloudMonitoring
+
+    Prometheus --> Grafana
+    CloudMonitoring --> GCPConsole
+    CloudMonitoring --> Grafana
+
+    Prometheus --> PagerDuty
+    CloudMonitoring --> Slack
+    CloudMonitoring --> Email
+
+    style Traefik fill:#326ce5,stroke:#fff,stroke-width:2px,color:#fff
+    style Prometheus fill:#e6522c,stroke:#fff,stroke-width:2px,color:#fff
+    style Grafana fill:#f46800,stroke:#fff,stroke-width:2px,color:#fff
+```
+
+### SLA y Alertas Críticas
+
+```mermaid
+pie title Distribución de Alertas por Severidad
+    "P0 - Critical (< 5 min)" : 5
+    "P1 - High (< 15 min)" : 15
+    "P2 - Medium (< 1 hour)" : 30
+    "P3 - Low (< 24 hours)" : 50
+```
+
+### Métricas Clave (KPIs)
+
+| Métrica                  | SLA Target     | Alerta P0 | Alerta P1 | Fuente               |
+| ------------------------ | -------------- | --------- | --------- | -------------------- |
+| **Uptime**               | 99.9%          | < 99.0%   | < 99.5%   | Cloud Monitoring     |
+| **Response Time**        | < 500ms        | > 2000ms  | > 1000ms  | Traefik + Prometheus |
+| **Error Rate**           | < 0.1%         | > 1%      | > 0.5%    | Application Logs     |
+| **SSL Cert Expiry**      | 30 days notice | < 7 days  | < 15 days | Traefik Dashboard    |
+| **Pod Memory Usage**     | < 80%          | > 95%     | > 85%     | GKE Metrics          |
+| **Database Connections** | < 200          | > 400     | > 300     | Cloud SQL            |
+
+````
 
 ---
 
@@ -204,6 +423,179 @@ En caso de problemas durante la implementación:
 - [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 
 ---
+
+### Flujo de Tráfico de Red
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant CDN as ☁️ Cloud CDN
+    participant Armor as 🛡️ Cloud Armor
+    participant LB as ⚖️ Google LB
+    participant Traefik as 🚦 Traefik
+    participant Frontend as 🎨 Frontend
+    participant API as 🔌 API Gateway
+    participant Services as 📦 Microservices
+    participant DB as 🗄️ Database
+
+    User->>CDN: HTTPS Request
+    CDN->>CDN: Cache Check
+    alt Cache Miss
+        CDN->>Armor: Forward Request
+        Armor->>Armor: DDoS Protection
+        Armor->>LB: Clean Request
+        LB->>LB: SSL Termination
+        LB->>Traefik: HTTP Request
+        Traefik->>Traefik: Service Discovery
+        Traefik->>Traefik: Apply Middlewares
+        Traefik->>Frontend: Route Request
+        Frontend->>API: API Call
+        API->>Services: Service Call
+        Services->>DB: Data Query
+        DB-->>Services: Data Response
+        Services-->>API: Service Response
+        API-->>Frontend: API Response
+        Frontend-->>Traefik: HTML Response
+        Traefik-->>LB: Response + Headers
+        LB-->>Armor: HTTPS Response
+        Armor-->>CDN: Secure Response
+        CDN->>CDN: Cache Response
+    end
+    CDN-->>User: Cached/Fresh Response
+````
+
+### Diagrama de Despliegue
+
+```mermaid
+graph TB
+    subgraph GCP[Google Cloud Platform]
+        subgraph EdgeServices[Edge Services - Global Edge Network]
+            CDN[Google Cloud CDN - Global content delivery]
+            Armor[Google Cloud Armor - DDoS protection & WAF]
+            LB[Google Cloud Load Balancer - Global HTTPS load balancing]
+        end
+
+        subgraph GKECluster[GKE Cluster - Kubernetes Engine]
+            subgraph IngressLayer[Ingress Layer - Kubernetes Ingress]
+                Traefik[Traefik - Ingress Controller - Service discovery & routing]
+            end
+
+            subgraph ApplicationLayer[Application Layer - Kubernetes Pods]
+                Frontend[Frontend - React/Next.js - User interface]
+                APIGateway[API Gateway - GraphQL/REST - API aggregation]
+                AuthService[Auth Service - OAuth2/JWT - Authentication]
+                ProductsService[Products - Microservice - Product catalog]
+                OrdersService[Orders - Microservice - Order processing]
+                PaymentsService[Payments - Microservice - Payment processing]
+            end
+        end
+
+        subgraph DataLayer[Data Layer - Managed Services]
+            CloudSQLDB[Cloud SQL - PostgreSQL - Relational data]
+            FirestoreDB[Firestore - NoSQL - Document storage]
+            RedisCache[Memory Store - Redis - Cache & sessions]
+        end
+    end
+
+    CDN --> Armor
+    Armor --> LB
+    LB --> Traefik
+    Traefik --> Frontend
+    Traefik --> APIGateway
+    Traefik --> AuthService
+    APIGateway --> ProductsService
+    APIGateway --> OrdersService
+    APIGateway --> PaymentsService
+    ProductsService --> CloudSQLDB
+    OrdersService --> FirestoreDB
+    AuthService --> RedisCache
+
+    style Traefik fill:#326ce5,stroke:#fff,stroke-width:3px,color:#fff
+    style LB fill:#4285f4,stroke:#fff,stroke-width:2px,color:#fff
+    style CDN fill:#34a853,stroke:#fff,stroke-width:2px,color:#fff
+```
+
+### Comparación Visual de Alternativas
+
+```mermaid
+graph LR
+    subgraph "Traefik (Recomendado)"
+        T1[🚦 Auto-discovery]
+        T2[🔐 SSL Automático]
+        T3[📊 Dashboard Built-in]
+        T4[🔧 40+ Middlewares]
+        T5[☁️ Cloud Native]
+        T6[⚡ Configuración Dinámica]
+
+        T1 --- T2 --- T3 --- T4 --- T5 --- T6
+    end
+
+    subgraph "NGINX"
+        N1[⚙️ Configuración Manual]
+        N2[📝 Archivos Estáticos]
+        N3[🔧 Módulos Limitados]
+        N4[🔄 Requiere Reload]
+
+        N1 --- N2 --- N3 --- N4
+    end
+
+    subgraph "HAProxy"
+        H1[🔧 Configuración Compleja]
+        H2[📊 Stats Básicas]
+        H3[⚡ Alto Rendimiento]
+        H4[🎯 Especializado TCP/HTTP]
+
+        H1 --- H2 --- H3 --- H4
+    end
+
+    style T1 fill:#e1f5fe
+    style T2 fill:#e1f5fe
+    style T3 fill:#e1f5fe
+    style T4 fill:#e1f5fe
+    style T5 fill:#e1f5fe
+    style T6 fill:#e1f5fe
+
+    style N1 fill:#fff3e0
+    style N2 fill:#fff3e0
+    style N3 fill:#fff3e0
+    style N4 fill:#fff3e0
+
+    style H1 fill:#fce4ec
+    style H2 fill:#fce4ec
+    style H3 fill:#fce4ec
+    style H4 fill:#fce4ec
+```
+
+---
+
+## 📊 Visualización de Métricas Comparativas
+
+### Gráfico de Radar - Evaluación Técnica
+
+```mermaid
+%%{init: {"radar": {"maxValue": 10}}}%%
+radar
+    title Comparación Técnica de Reverse Proxies
+    "Auto-discovery" : [9, 3, 2]
+    "Cloud Native" : [9, 5, 4]
+    "Configuración" : [9, 4, 5]
+    "Observabilidad" : [8, 5, 4]
+    "Middlewares" : [9, 6, 3]
+    "Rendimiento" : [7, 8, 9]
+    "Curva Aprendizaje" : [8, 6, 4]
+    "CI/CD Integration" : [9, 5, 4]
+    "TCO" : [9, 6, 4]
+```
+
+### ROI y Ahorro de Costos
+
+```mermaid
+xychart-beta
+    title "Ahorro Acumulado en 3 Años (USD)"
+    x-axis ["Año 1", "Año 2", "Año 3"]
+    y-axis "Ahorro ($)" 0 --> 5000
+    bar [1250, 3000, 4750]
+```
 
 **Documento preparado por**: Equipo de Arquitectura TI  
 **Fecha**: Junio 2025  
