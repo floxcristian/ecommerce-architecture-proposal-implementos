@@ -9,6 +9,7 @@
 - **Latencia**: Tiempo que tarda en viajar la información desde el servidor hasta el usuario (medido en milisegundos - ms)
 - **WAF (Web Application Firewall)**: Sistema de seguridad que filtra tráfico malicioso antes de que llegue al servidor
 - **DDoS Protection**: Protección contra ataques de denegación de servicio distribuido
+- **SLA (Service Level Agreement)**: Acuerdo contractual que garantiza un nivel específico de servicio (ej: 99.99% uptime). Incluye compensaciones si no se cumple
 - **Cache Hit/Miss**: Hit = contenido servido desde CDN, Miss = debe obtenerse del servidor original
 - **Core Web Vitals**: Métricas de Google que miden la experiencia de usuario (velocidad, interactividad, estabilidad visual)
 
