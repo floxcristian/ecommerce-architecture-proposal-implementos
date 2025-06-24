@@ -305,62 +305,32 @@ graph LR
 
 ---
 
-## 🔨 Plan de Implementación y Migración
+## 🔨 Evaluación de Complejidad de Implementación
 
-### Cloudflare CDN - Implementación Rápida (Recomendado)
+### Comparativa de Tiempo y Complejidad
 
-**Tiempo estimado**: 1-2 días  
-**Complejidad**: Baja  
-**Downtime**: Cero (con DNS TTL bajo)
+| Aspecto                | Google Cloud CDN              | Cloudflare CDN          |
+| ---------------------- | ----------------------------- | ----------------------- |
+| **Tiempo estimado**    | 3-5 días                      | 1-2 días                |
+| **Complejidad**        | Alta (requiere Load Balancer) | Baja (solo cambio DNS)  |
+| **Downtime**           | 2-4 horas durante migración   | Cero (con DNS TTL bajo) |
+| **Requisitos previos** | Configuración GCP completa    | Solo cuenta Cloudflare  |
 
-#### Fases de Implementación:
+### Resumen de Diferencias Técnicas
 
-1. **Preparación (2-4 horas)**
+**Google Cloud CDN:**
 
-   - Crear cuenta Cloudflare
-   - Auditar DNS records existentes
-   - Configurar SSL mode
+- Requiere configuración previa de Load Balancer, Backend Services y Health Checks
+- Proceso más complejo pero con mayor control granular
+- Integración nativa con ecosistema Google Cloud
+- Mayor tiempo de implementación debido a dependencias
 
-2. **Migración DNS (15 minutos)**
+**Cloudflare CDN:**
 
-   - Cambiar nameservers a Cloudflare
-   - Verificar propagación DNS
-
-3. **Optimización (2-6 horas)**
-
-   - Configurar Page Rules
-   - Activar Auto Minify
-   - Configurar Cache levels
-
-4. **Testing y Validación (4-8 horas)**
-   - Pruebas de rendimiento
-   - Validación SSL
-   - Monitoreo de métricas
-
-### Google Cloud CDN - Implementación Completa
-
-**Tiempo estimado**: 3-5 días  
-**Complejidad**: Alta  
-**Downtime**: 2-4 horas (durante migración)
-
-#### Fases de Implementación:
-
-1. **Preparación (1-2 días)**
-
-   - Configurar Load Balancer
-   - Crear Backend Services
-   - Configurar Health Checks
-
-2. **Configuración CDN (4-8 horas)**
-
-   - Crear CDN distribution
-   - Configurar cache policies
-   - Setup SSL certificates
-
-3. **Integración y Testing (1-2 días)**
-   - Configurar monitoring
-   - Load testing
-   - Failover testing
+- Implementación directa mediante cambio de nameservers
+- Configuración inmediata con optimizaciones automáticas
+- Menor curva de aprendizaje para equipos pequeños
+- Implementación prácticamente sin downtime
 
 ---
 
@@ -646,136 +616,75 @@ flowchart TD
 
 ## 🚀 Roadmap de Implementación
 
-### 📅 Plan de Implementación CDN - Cloudflare Recomendado
+### 📅 Plan de Implementación y Checklist - Cloudflare Recomendado
 
-```mermaid
-graph TD
-    subgraph "Cronograma de Implementación"
-        subgraph "📅 Semana 1"
-            W1_1[Lunes: Crear cuenta Cloudflare Pro<br/>+ Auditar DNS records actuales]
-            W1_2[Miércoles: Configurar entorno de pruebas<br/>+ Establecer métricas baseline]
-            W1_3[Viernes: Capacitación básica equipo técnico]
-            W1_1 --> W1_2 --> W1_3
-        end
+#### Cronograma de Implementación por Fases
 
-        subgraph "📅 Semana 2-3"
-            W2_1[Lunes: Implementar en subdominios test<br/>+ Configurar Page Rules básicas]
-            W2_2[Miércoles: Pruebas de carga y rendimiento<br/>+ Ajustar configuraciones]
-            W2_3[Viernes: Validación completa testing<br/>+ Documentar configuraciones]
-            W2_1 --> W2_2 --> W2_3
-        end
+**🔍 Fase 1: Preparación (Semana 1)**
 
-        subgraph "📅 Mes 2"
-            M2_1[Semana 1: Migración producción fase 1<br/>+ Monitoreo intensivo]
-            M2_2[Semana 2: Configuración WAF avanzada<br/>+ Optimización rules]
-            M2_3[Semana 3: Integración con monitoreo<br/>+ Training equipo avanzado]
-            M2_4[Semana 4: Evaluación métricas<br/>+ Optimización continua]
-            M2_1 --> M2_2 --> M2_3 --> M2_4
-        end
+- **Lunes**: Crear cuenta Cloudflare Pro y auditar DNS records actuales
+- **Miércoles**: Configurar entorno de pruebas y establecer métricas baseline
+- **Viernes**: Capacitación básica del equipo técnico
+- **Entregables**: Cuenta configurada, documentación DNS, métricas baseline establecidas
 
-        W1_3 --> W2_1
-        W2_3 --> M2_1
-    end
+**🧪 Fase 2: Testing (Semanas 2-3)**
 
-    style W1_1 fill:#e3f2fd,stroke:#1976d2
-    style W1_2 fill:#e3f2fd,stroke:#1976d2
-    style W1_3 fill:#e3f2fd,stroke:#1976d2
-    style W2_1 fill:#f3e5f5,stroke:#7b1fa2
-    style W2_2 fill:#f3e5f5,stroke:#7b1fa2
-    style W2_3 fill:#f3e5f5,stroke:#7b1fa2
-    style M2_1 fill:#e8f5e8,stroke:#388e3c
-    style M2_2 fill:#e8f5e8,stroke:#388e3c
-    style M2_3 fill:#e8f5e8,stroke:#388e3c
-    style M2_4 fill:#e8f5e8,stroke:#388e3c
-```
+- **Semana 2, Lunes**: Implementar en subdominios de prueba + configurar Page Rules básicas
+- **Semana 2, Miércoles**: Pruebas de carga y rendimiento + ajustar configuraciones
+- **Semana 3, Viernes**: Validación completa de testing + documentar configuraciones finales
+- **Entregables**: Entorno de testing validado, configuraciones optimizadas, documentación técnica
 
-### ✅ Checklist de Implementación
+**🚀 Fase 3: Producción (Mes 2)**
 
-```mermaid
-graph TD
-    subgraph "Fases de Implementación"
-        subgraph "🔍 Fase 1: Preparación"
-            PREP1[📋 Audit DNS records existentes]
-            PREP2[📊 Establecer métricas baseline]
-            PREP3[👥 Capacitación del equipo]
-            PREP1 --> PREP2 --> PREP3
-        end
+- **Semana 1**: Migración a producción fase 1 + monitoreo intensivo
+- **Semana 2**: Configuración WAF avanzada + optimización de rules
+- **Semana 3**: Integración con sistemas de monitoreo + training avanzado del equipo
+- **Semana 4**: Evaluación de métricas + implementación de optimización continua
+- **Entregables**: Sistema en producción, WAF configurado, monitoreo integrado
 
-        subgraph "🧪 Fase 2: Testing"
-            TEST1[🌐 Configurar subdominios de prueba]
-            TEST2[⚡ Pruebas de rendimiento]
-            TEST3[📈 Load testing]
-            TEST1 --> TEST2 --> TEST3
-        end
+**✅ Fase 4: Optimización Continua**
 
-        subgraph "🚀 Fase 3: Producción"
-            PROD1[🔄 Migración a producción]
-            PROD2[🛡️ Configuración WAF avanzada]
-            PROD3[📊 Setup de monitoreo]
-            PROD1 --> PROD2 --> PROD3
-        end
+- Evaluación semanal de métricas de rendimiento
+- Ajustes continuos basados en datos reales
+- Documentación final y procedimientos operativos
+- **Entregables**: Documentación completa, procedimientos establecidos, equipo capacitado
 
-        subgraph "✅ Fase 4: Optimización"
-            OPT1[📈 Evaluación de métricas]
-            OPT2[🔧 Optimización continua]
-            OPT3[📚 Documentación final]
-            OPT1 --> OPT2 --> OPT3
-        end
+#### Checklist de Implementación
 
-        PREP3 --> TEST1
-        TEST3 --> PROD1
-        PROD3 --> OPT1
-    end
+**� Preparación**
 
-    style PREP1 fill:#e3f2fd,stroke:#1976d2
-    style PREP2 fill:#e3f2fd,stroke:#1976d2
-    style PREP3 fill:#e3f2fd,stroke:#1976d2
-    style TEST1 fill:#fff3e0,stroke:#f57c00
-    style TEST2 fill:#fff3e0,stroke:#f57c00
-    style TEST3 fill:#fff3e0,stroke:#f57c00
-    style PROD1 fill:#f3e5f5,stroke:#7b1fa2
-    style PROD2 fill:#f3e5f5,stroke:#7b1fa2
-    style PROD3 fill:#f3e5f5,stroke:#7b1fa2
-    style OPT1 fill:#e8f5e8,stroke:#388e3c
-    style OPT2 fill:#e8f5e8,stroke:#388e3c
-    style OPT3 fill:#e8f5e8,stroke:#388e3c
-```
+- [ ] Audit completo de DNS records existentes
+- [ ] Establecimiento de métricas baseline (TTFB, Cache Hit Rate, Uptime)
+- [ ] Capacitación del equipo técnico en Cloudflare Dashboard
+- [ ] Configuración de entorno de respaldo
+
+**🧪 Testing**
+
+- [ ] Configuración de subdominios de prueba (test.dominio.com)
+- [ ] Implementación de Page Rules básicas
+- [ ] Pruebas de rendimiento con herramientas como GTmetrix, PageSpeed
+- [ ] Load testing con herramientas como Apache Bench o Loader.io
+- [ ] Validación de funcionalidades críticas del e-commerce
+
+**🚀 Producción**
+
+- [ ] Migración gradual del tráfico a Cloudflare
+- [ ] Configuración de WAF con reglas específicas para e-commerce
+- [ ] Setup de alertas y monitoreo en tiempo real
+- [ ] Configuración de Page Rules optimizadas para performance
+- [ ] Integración con sistemas de analytics existentes
+
+**🔧 Optimización**
+
+- [ ] Evaluación mensual de métricas vs. baseline
+- [ ] Ajustes de configuración basados en patrones de tráfico
+- [ ] Optimización de reglas de cache
+- [ ] Documentación de mejores prácticas
+- [ ] Plan de escalabilidad para crecimiento futuro
 
 ---
 
 ## 🌎 Análisis Específico para Chile, Perú y España
-
-### Cobertura CDN en Mercados Objetivo
-
-```mermaid
-graph TB
-    subgraph "Presencia CDN en Regiones de Operación"
-        subgraph "España 🇪🇸"
-            ES1[Madrid - Google Cloud ✅]
-            ES2[Madrid - Cloudflare ✅]
-            ES3[Barcelona - Cloudflare ✅]
-        end
-
-        subgraph "Chile 🇨🇱"
-            CL1[Santiago - Google Cloud ✅]
-            CL2[Santiago - Cloudflare ✅]
-            CL3[Valparaíso - Cloudflare ✅]
-        end
-
-        subgraph "Perú 🇵🇪"
-            PE1[Lima - Google Cloud ❌]
-            PE2[Lima - Cloudflare ✅]
-        end
-
-        subgraph "Impacto de Cobertura"
-            IMPACT[Perú sin Google Cloud CDN<br/>= Latencia desde São Paulo<br/>~80-120ms adicionales]
-        end
-    end
-
-    style PE1 fill:#ffcccc
-    style PE2 fill:#ccffcc
-    style IMPACT fill:#fff3cd
-```
 
 ### Latencia Real Estimada por País
 
@@ -786,29 +695,6 @@ graph TB
 | **Perú (Lima)**      | ~80-120ms        | ~30-50ms       | Cloudflare 60% mejor         |
 
 **Nota crítica**: Google Cloud CDN no tiene PoP en Lima, el tráfico se enruta desde São Paulo, Brasil.
-
-### Impacto Específico para sus Mercados
-
-```mermaid
-graph TD
-    subgraph "Rendimiento por País - Operaciones Actuales"
-        A[España 🇪🇸<br/>Madrid PoP]
-        B[Chile 🇨🇱<br/>Santiago PoP]
-        C[Perú 🇵🇪<br/>Sin PoP directo]
-
-        A --> A1[Google CDN: ~25ms<br/>Cloudflare: ~20ms]
-        B --> B1[Google CDN: ~50ms<br/>Cloudflare: ~30ms]
-        C --> C1[Google CDN: ~100ms*<br/>Cloudflare: ~40ms]
-
-        C1 --> C2[*Enrutado desde<br/>São Paulo, Brasil]
-    end
-
-    style C fill:#ffcccc
-    style C1 fill:#ffcccc
-    style C2 fill:#fff3cd
-```
-
-**Conclusión crítica**: Para Perú, Cloudflare ofrece 60% mejor rendimiento que Google Cloud CDN.
 
 ### Costos Específicos para Chile, Perú y España
 
@@ -832,23 +718,6 @@ graph TD
 ---
 
 ## 🎯 Recomendación Específica para Chile, Perú y España
-
-### Análisis Crítico para sus Operaciones
-
-```mermaid
-graph TD
-    A[Operaciones Multi-País] --> B{¿Perú incluido?}
-    B -->|Sí| C[Google Cloud CDN<br/>Rendimiento degradado<br/>+80ms latencia]
-    B -->|Sí| D[Cloudflare CDN<br/>PoP en Lima<br/>Rendimiento óptimo]
-
-    C --> E[❌ No recomendado<br/>Experiencia usuario pobre Perú]
-    D --> F[✅ Recomendado<br/>Experiencia consistente 3 países]
-
-    style C fill:#ffcccc
-    style E fill:#ffcccc
-    style D fill:#ccffcc
-    style F fill:#ccffcc
-```
 
 ### Factores Decisivos para su Caso
 
@@ -996,7 +865,6 @@ Para comparaciones head-to-head entre proveedores, utilizamos:
 | ----------------------- | --------------------- | ----------------- | -------------------------------- |
 | **Cloudflare Free**     | $0                    | $0                | Funcional para startups          |
 | **Cloudflare Pro**      | $20                   | $240              | **RECOMENDADO** - Mejor valor    |
-| **Cloudflare Pro**      | $20                   | $240              | **Recomendado para 90%**         |
 | **Cloudflare Business** | $200                  | $2,400            | Solo si requiere SLA             |
 | **Google Cloud CDN**    | $44 + $18-36 + extras | $744-960 + extras | Solo CDN, requiere adicionales   |
 | **Google Cloud Total**  | ~$80-120              | ~$960-1,440       | CDN + Load Balancer + mínimo WAF |
@@ -1035,7 +903,6 @@ Para comparaciones head-to-head entre proveedores, utilizamos:
 | 500GB           | ~$80/mes         | **$20/mes fijo** | $200/mes            | **Cloudflare Pro** |
 | 1TB             | ~$140/mes        | **$20/mes fijo** | $200/mes            | **Cloudflare Pro** |
 | 2TB             | ~$260/mes        | **$20/mes fijo** | $200/mes            | **Cloudflare Pro** |
-| 5TB             | ~$600/mes        | **$20/mes fijo** | $200/mes            | **Cloudflare Pro** |
 | 5TB             | ~$600/mes        | **$20/mes fijo** | $200/mes            | **Cloudflare Pro** |
 
 **💡 Insight Importante**: Con los datos oficiales de Cloudflare, el **Plan Pro ($20/mes)** es increíblemente competitivo para la mayoría de e-commerce, ya que incluye CDN ilimitado + optimización de imágenes.
@@ -1167,30 +1034,3 @@ flowchart TD
 - Sector regulado que exige SLA contractual
 
 **Para 90% de e-commerce**: Plan Pro es la elección más inteligente.
-
----
-
-## 📚 Fuentes y Metodología
-
-### Datos de Estudios de Caso CDN General
-
-- **Google Web.dev**: [Case studies Core Web Vitals](https://web.dev/case-studies/)
-- **Análisis**: Implementación CDN vs sin CDN (NO comparativo entre proveedores)
-
-### Datos Técnicos Comparativos
-
-- **Cloudflare Network Map**: [Cloudflare Locations](https://www.cloudflare.com/network/)
-- **Google Cloud CDN Locations**: [GCP CDN Edge Locations](https://cloud.google.com/cdn/docs/locations)
-- **Precios Oficiales**: Cloudflare Pricing Page, Google Cloud Pricing Calculator
-
-### Metodología de Latencia
-
-- **Herramientas**: Cloudflare Speed Test, Google Cloud Network Intelligence
-- **Mediciones**: RTT promedio desde Chile, Perú, España a edge locations más cercanos
-- **Baseline**: Sin CDN = conexión directa a servidor origin (Madrid, España)
-
-### Limitaciones del Análisis
-
-- **Falta de benchmarks head-to-head públicos** entre Google Cloud CDN y Cloudflare CDN
-- **Variabilidad regional**: Las métricas pueden variar según ISP local y infraestructura
-- **Contexto específico**: Resultados aplicables a e-commerce con usuarios en Chile, Perú, España
