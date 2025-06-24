@@ -6,7 +6,7 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 **🎯 Recomendación:** Adopción de **Prometheus + Grafana** como solución de monitoreo unificada.
 
-**💰 Impacto financiero:** Ahorro de $77K-85K USD en 3 años vs alternativas SaaS.
+**💰 Impacto financiero:** Ahorro de $9.6K-11.8K USD en 3 años vs alternativas SaaS.
 
 ### 🎯 Objetivos Estratégicos
 
@@ -17,48 +17,23 @@ Este documento presenta un análisis comparativo entre tres plataformas líderes
 
 ---
 
-## 🏗️ Contexto: Nuestra Arquitectura Actual
+## 🏗️ Contexto: Situación Actual
 
-### 📊 Infraestructura Híbrida Existente
+### 📊 Estado de la Infraestructura
 
-Actualmente operamos una arquitectura híbrida que nos brinda ventajas únicas:
+**Situación conocida:**
 
-```mermaid
-graph TB
-    subgraph "🏢 On-Premise"
-        ON1[🖥️ Servicios Internos]
-        ON2[⚙️ Desarrollo/Testing]
-        ON3[💾 Storage/Backup]
-        ON4[🔧 Infraestructura Disponible]
-    end
-
-    subgraph "☁️ Google Cloud Platform"
-        GCP1[🌐 Frontend<br/>2 instancias]
-        GCP2[⚙️ API Principal<br/>1 instancia]
-        GCP3[🗄️ Base de Datos<br/>2 instancias]
-        GCP4[⚡ Cache Redis<br/>1 instancia]
-        GCP5[🔄 Load Balancer<br/>1 instancia]
-        GCP6[📋 Background Jobs<br/>1 instancia]
-    end
-
-    ON1 -.->|VPN/VPC| GCP1
-    ON2 -.->|Conectividad| GCP2
-    ON3 -.->|Existente| GCP3
-
-    style ON4 fill:#e1f5fe
-    style GCP1 fill:#fff3e0
-    style GCP2 fill:#fff3e0
-    style GCP3 fill:#ffebee
-```
-
-**Servicios en GCP que requieren monitoreo:** 8 servicios críticos
+- **Servicios en producción** desplegados en **Google Cloud Platform (GCP)**
+- **Necesidad identificada:** Implementar monitoreo robusto y escalable
+- **Objetivos:** Independencia tecnológica y optimización de costos
 
 ### 🎯 Necesidades de Monitoreo Identificadas
 
-- **Monitoreo remoto:** Desde on-premise hacia servicios GCP
-- **Conectividad existente:** VPN/VPC ya establecida
-- **Criticidad moderada:** Monitoreo no es crítico para disponibilidad (tenemos respaldo on-premise)
-- **Escalabilidad futura:** Preparación para crecimiento gradual
+- **Observabilidad completa** de servicios GCP
+- **Alertas proactivas** para prevenir incidentes
+- **Métricas de rendimiento** para optimización
+- **Independencia de proveedores** para flexibilidad futura
+- **Escalabilidad** según crecimiento del negocio
 
 ---
 
@@ -69,7 +44,7 @@ graph TB
 **1. Prometheus + Grafana** (Open Source)
 
 - Herramienta de monitoreo cloud-native estándar de la industria
-- Instalación on-premise con monitoreo remoto a GCP
+- Múltiples opciones de deployment (GCP, Kubernetes, infraestructura externa)
 
 **2. DataDog** (SaaS Premium)
 
@@ -95,7 +70,7 @@ graph TB
 | **🚨 Sistema de Alertas**         | ✅ Alertmanager (altamente configurable)    | ✅ Integrado                      | ✅ Integrado                      |
 | **🔌 Ecosistema e Integraciones** | ✅ **Más amplio** (CNCF ecosystem)          | ⚠️ Limitado a partners            | ⚠️ Limitado a partners            |
 | **📊 Escalabilidad**              | 🟡 Requiere planificación (horizontal)      | ✅ Automática (managed)           | ✅ Automática (managed)           |
-| **💵 Costo Total (TCO)**          | ✅ **Solo infraestructura**                 | ❌ $23+ USD por host/mes          | ❌ $25+ USD por host/mes          |
+| **💵 Costo Total (TCO)**          | ✅ **Solo infraestructura**                 | ❌ $15+ USD por host/mes          | ❌ $25+ USD por host/mes          |
 | **⚡ Facilidad de Adopción**      | 🟡 Curva de aprendizaje moderada            | ✅ Implementación rápida          | ✅ Implementación rápida          |
 | **🛡️ Soporte y Comunidad**        | ✅ **Comunidad CNCF + soporte empresarial** | ✅ Soporte 24/7                   | ✅ Soporte 24/7                   |
 
@@ -105,185 +80,203 @@ graph TB
 
 ### 📊 Proyección de Costos por Escenario
 
-**Escenario Base:** Monitoreo de 8 servicios GCP desde infraestructura on-premise existente
+**Escenario Base:** Monitoreo de servicios típicos en GCP (5-10 instancias/servicios)
 
-> **Arquitectura híbrida:** Prometheus/Grafana instalado en servidores on-premise monitoreando servicios desplegados en GCP vía endpoints remotos
+| Año               | **Prometheus + Grafana** | **DataDog**     | **New Relic**   |
+| ----------------- | ------------------------ | --------------- | --------------- |
+| **Año 0 (Setup)** | $3,500 USD (una vez)     | $0              | $0              |
+| **Año 1**         | $0 USD                   | $3,600 USD      | $4,200 USD      |
+| **Año 2**         | $0 USD                   | $4,320 USD      | $5,040 USD      |
+| **Año 3**         | $0 USD                   | $5,184 USD      | $6,048 USD      |
+| **Total 3 años**  | **$3,500 USD**           | **$13,104 USD** | **$15,288 USD** |
 
-| Año               | **Prometheus (VM existente)** | **Prometheus (servidor nuevo)**  | **DataDog**     | **New Relic**   |
-| ----------------- | ----------------------------- | -------------------------------- | --------------- | --------------- |
-| **Año 0 (Setup)** | $2,500 USD (implementación)   | $3,700 USD (implementación + HW) | $0              | $0              |
-| **Año 1**         | $0 USD                        | $0 USD                           | $22,080 USD     | $24,000 USD     |
-| **Año 2**         | $0 USD                        | $0 USD                           | $26,496 USD     | $28,800 USD     |
-| **Año 3**         | $0 USD                        | $0 USD                           | $31,795 USD     | $34,560 USD     |
-| **Total 3 años**  | **$2,500 USD**                | **$3,700 USD**                   | **$80,371 USD** | **$87,360 USD** |
+> **Nota:** Costos basados en 5-10 hosts/servicios típicos para una implementación inicial en GCP
 
 ### 💡 ROI y Ahorros Proyectados
 
-**Escenario 1: Usando VM en hardware existente**
+- **Ahorro vs DataDog:** $9,604 USD (73% ahorro)
+- **Ahorro vs New Relic:** $11,788 USD (77% ahorro)
+- **ROI en 3 años:** 274% vs DataDog
+- **Punto de equilibrio:** 10 meses vs DataDog
 
-- **Ahorro vs DataDog:** $77,871 USD (97% ahorro)
-- **Ahorro vs New Relic:** $84,860 USD (97% ahorro)
-- **ROI en 3 años:** 3,115% vs DataDog
+### 🎯 Desglose de Costos por Solución
 
-**Escenario 2: Con servidor dedicado nuevo**
+#### **Prometheus + Grafana**
 
-- **Ahorro vs DataDog:** $76,671 USD (95% ahorro)
-- **Ahorro vs New Relic:** $83,660 USD (96% ahorro)
-- **ROI en 3 años:** 2,073% vs DataDog
+**Opciones de implementación:**
 
-**Punto de equilibrio:** El servidor se paga solo en 2 meses vs DataDog
+**Opción A: Self-managed en GCP**
 
-### 🎯 Desglose de Costos SOLO para Monitoreo
+- Compute Engine instance (e2-standard-2): $100 USD/mes
+- **Costo 3 años:** $3,600 USD
 
-#### **Prometheus + Grafana (On-Premise)**
+**Opción B: Google Kubernetes Engine (GKE)**
 
-**Costos de licencias:** $0 USD (open source)
+- GKE cluster pequeño: $85 USD/mes
+- **Costo 3 años:** $3,060 USD
 
-**Inversión inicial en hardware (si es necesario):**
+**Opción C: Infraestructura propia**
 
-- **Servidor dedicado:** $1,200 USD (opción Dell T140)
-- **O usar VM en hardware existente:** $0 USD
+- Hardware dedicado: $1,500 USD (una vez)
+- **Costo 3 años:** $1,500 USD
 
-**Costos de implementación única:**
+**Costos de implementación:**
 
-- Instalación y configuración: $1,500 USD (una vez)
-- Capacitación del equipo: $1,000 USD (una vez)
-- **Total implementación:** $2,500 USD + hardware
-
-**Costos recurrentes:** $0 USD/año (mantenimiento incluido en OpEx existente)
-
-**Escenarios de inversión total:**
-
-- **Con servidor nuevo:** $3,700 USD (una vez)
-- **Con VM existente:** $2,500 USD (una vez)
+- Instalación y configuración: $2,000 USD (una vez)
+- Capacitación del equipo: $1,500 USD (una vez)
+- **Setup total:** $3,500 USD
 
 #### **DataDog (SaaS)**
 
-**Costo por agente:** $23 USD/mes × 8 servicios = $184 USD/mes
+**Modelo de pricing realista:**
 
-- **Año 1:** $2,208 USD + fees = $2,500 USD aprox
+- **Plan Infrastructure:** $15 USD/host/mes
+- **5-10 hosts estimados:** $75-150 USD/mes iniciales
+- **Promedio:** $300 USD/mes ($3,600/año)
 - **Crecimiento anual:** +20% (más servicios)
+- **Fees adicionales:** Logs, APM, métricas custom (+$50-100/mes)
 
 #### **New Relic (SaaS)**
 
-**Costo por agente:** $25 USD/mes × 8 servicios = $200 USD/mes
+**Modelo de pricing realista:**
 
-- **Año 1:** $2,400 USD + fees = $2,700 USD aprox
+- **Plan Standard:** $25 USD/host/mes
+- **5-10 hosts estimados:** $125-250 USD/mes iniciales
+- **Promedio:** $350 USD/mes ($4,200/año)
 - **Crecimiento anual:** +20% (más servicios)
+- **Fees adicionales:** APM Pro features (+$100-150/mes)
 
 ---
 
-## 🖥️ Recomendaciones de Hardware On-Premise
+## 🏗️ Opciones de Implementación
 
-### 📊 Especificaciones Recomendadas
+### 📊 Alternativas de Deployment para Prometheus + Grafana
 
-| Componente  | **Mínimo**       | **Recomendado**  | **Justificación**                  |
-| ----------- | ---------------- | ---------------- | ---------------------------------- |
-| **CPU**     | 4 cores @ 2.4GHz | 8 cores @ 3.0GHz | PromQL queries + Grafana rendering |
-| **RAM**     | 8GB              | 16GB             | Time series data caching + OS      |
-| **Storage** | 500GB SSD        | 1TB NVMe SSD     | Métricas históricas (1-2 años)     |
-| **Red**     | 1Gbps            | 1Gbps            | Suficiente para scraping remoto    |
-| **OS**      | Ubuntu 20.04+    | Ubuntu 22.04 LTS | Estabilidad y soporte largo        |
-
-### 💻 Opciones de Hardware Recomendadas
-
-**Opción 1: Dell PowerEdge T140** - $1,200 USD
-
-- **CPU:** Intel Xeon E-2224 (4 cores @ 3.4GHz)
-- **RAM:** 16GB DDR4 ECC
-- **Storage:** 1TB SSD SATA
-- **Ventaja:** Confiabilidad empresarial, soporte Dell
-
-**Opción 2: HP ProLiant ML110 Gen10** - $1,400 USD
-
-- **CPU:** Intel Xeon Bronze 3204 (6 cores @ 1.9GHz)
-- **RAM:** 16GB DDR4 ECC
-- **Storage:** 1TB NVMe SSD
-- **Ventaja:** Mejor performance storage, expandibilidad
-
-**Opción 3: Supermicro SuperServer 5019S-L (Budget)** - $900 USD
-
-- **CPU:** Intel Xeon E3-1230v6 (4 cores @ 3.5GHz)
-- **RAM:** 16GB DDR4 ECC
-- **Storage:** 500GB NVMe SSD
-- **Ventaja:** Costo optimizado, performance adecuado
-
-**Opción 4: VM en servidor existente** - $0 USD
-
-- **vCPU:** 4 cores
-- **vRAM:** 8-12GB
-- **vDisk:** 200GB (thin provisioned)
-- **Ventaja:** Usa infraestructura actual
-
----
-
-## 🏗️ Arquitectura de Monitoreo Híbrida
-
-### 🔄 Diseño de la Solución
-
-**Prometheus/Grafana ubicado ON-PREMISE monitoreando servicios GCP:**
+#### **Opción A: Self-managed en GCP** ⭐ Recomendado
 
 ```mermaid
-graph LR
-    subgraph "🏢 On-Premise"
-        P[🖥️ Prometheus<br/>Server]
-        G[📊 Grafana<br/>Dashboard]
-        A[🚨 Alertmanager<br/>Notifications]
-
-        P --> G
-        P --> A
-    end
-
+graph TB
     subgraph "☁️ Google Cloud Platform"
-        F1[🌐 Frontend-1]
-        F2[🌐 Frontend-2]
-        API[⚙️ API Principal]
-        DB1[�️ DB Primary]
-        DB2[🗄️ DB Replica]
-        CACHE[⚡ Redis Cache]
-        LB[🔄 Load Balancer]
-        BG[📋 Background Jobs]
+        direction TB
+        
+        subgraph "🔧 Stack de Monitoreo"
+            direction LR
+            P["🖥️ Prometheus<br/>📊 Metrics Collection<br/>💾 Time Series DB"]
+            G["📊 Grafana<br/>📈 Dashboards<br/>👁️ Visualization"]
+            A["🚨 Alertmanager<br/>📢 Notifications<br/>🔔 Alert Routing"]
+        end
+        
+        subgraph "📱 Servicios de Aplicación"
+            direction TB
+            subgraph "🌐 Frontend Tier"
+                WEB1["🌐 Web Service 1<br/>:9090/metrics"]
+                WEB2["🌐 Web Service 2<br/>:9090/metrics"]
+            end
+            
+            subgraph "⚙️ Backend Tier"
+                API["⚙️ API Service<br/>:9090/metrics"]
+                BG["📋 Background Jobs<br/>:9090/metrics"]
+            end
+            
+            subgraph "🗄️ Data Tier"
+                DB["�️ Database<br/>:9104/metrics"]
+                CACHE["⚡ Redis Cache<br/>:9121/metrics"]
+            end
+        end
+        
+        subgraph "🔄 Infrastructure"
+            LB["🔄 Load Balancer<br/>GCP Monitoring API"]
+        end
     end
-
-    P -.->|:9090/metrics<br/>15s| F1
-    P -.->|:9090/metrics<br/>15s| F2
-    P -.->|:9090/metrics<br/>15s| API
-    P -.->|:9104/metrics<br/>30s| DB1
-    P -.->|:9104/metrics<br/>30s| DB2
-    P -.->|:9121/metrics<br/>15s| CACHE
-    P -.->|GCP API<br/>60s| LB
-    P -.->|:9090/metrics<br/>30s| BG
-
-    style P fill:#4caf50
-    style G fill:#2196f3
-    style A fill:#ff9800
-    style F1 fill:#fff3e0
-    style F2 fill:#fff3e0
-    style API fill:#fff3e0
-    style DB1 fill:#ffebee
-    style DB2 fill:#ffebee
+    
+    %% Conexiones de scraping
+    P -->|"🔄 Pull 15s"| WEB1
+    P -->|"🔄 Pull 15s"| WEB2
+    P -->|"🔄 Pull 30s"| API
+    P -->|"🔄 Pull 30s"| BG
+    P -->|"🔄 Pull 30s"| DB
+    P -->|"🔄 Pull 15s"| CACHE
+    P -->|"🔄 API 60s"| LB
+    
+    %% Conexiones internas del stack de monitoreo
+    P -->|"📊 Data"| G
+    P -->|"🚨 Alerts"| A
+    G -.->|"🔍 Query"| P
+    
+    %% Estilos para mejor visualización
+    style P fill:#2e7d32,stroke:#1b5e20,stroke-width:3px,color:#fff
+    style G fill:#1565c0,stroke:#0d47a1,stroke-width:3px,color:#fff
+    style A fill:#ef6c00,stroke:#e65100,stroke-width:3px,color:#fff
+    
+    style WEB1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style WEB2 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style API fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style BG fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style DB fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style CACHE fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style LB fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
 ```
 
-**Costo de infraestructura:** $0 USD (usa servidores existentes)
+**Ventajas:**
+- ✅ **Arquitectura por capas:** Separación clara entre frontend, backend y datos
+- ✅ **Latencia mínima:** Scraping optimizado (< 5ms dentro de GCP)
+- ✅ **Escalabilidad automática:** Compute Engine auto-scaling disponible
+- ✅ **Visibilidad completa:** Monitoreo de toda la stack de aplicación
+- ✅ **Costos optimizados:** Aprovecha infraestructura GCP existente
+- ✅ Escalabilidad automática disponible
 
-### 🔧 Conectividad Requerida
+#### **Opción B: Google Kubernetes Engine (GKE)**
 
-- **VPN/VPC Peering:** Entre on-premise y GCP (ya existente)
-- **Firewall rules:** Permitir puerto 9090 (Prometheus metrics)
-- **Service discovery:** Kubernetes service discovery o endpoints estáticos
+**Ventajas:**
 
-### 📊 Transferencia de Datos
+- ✅ Contenedores nativos cloud
+- ✅ Auto-escalado según demanda
+- ✅ Integración directa con GCP services
 
-| Servicio GCP        | Endpoint de Métricas | Frecuencia | Datos Transferidos |
-| ------------------- | -------------------- | ---------- | ------------------ |
-| **Frontend**        | `:9090/metrics`      | 15s        | ~1KB/scrape        |
-| **API**             | `:9090/metrics`      | 15s        | ~2KB/scrape        |
-| **Database**        | `:9104/metrics`      | 30s        | ~5KB/scrape        |
-| **Cache**           | `:9121/metrics`      | 15s        | ~1KB/scrape        |
-| **Load Balancer**   | GCP API              | 60s        | ~3KB/call          |
-| **Background Jobs** | `:9090/metrics`      | 30s        | ~1KB/scrape        |
+#### **Opción C: Infraestructura Externa**
 
-**Transferencia total:** ~50MB/mes (negligible)
+**Consideraciones:**
+
+- ⚠️ Requiere conectividad estable a GCP
+- ⚠️ Latencia adicional para métricas
+- ⚠️ Complejidad de networking
+
+### 🔧 Especificaciones Técnicas Recomendadas
+
+| Componente  | **Mínimo** | **Recomendado** | **Justificación**                  |
+| ----------- | ---------- | --------------- | ---------------------------------- |
+| **CPU**     | 2 vCPUs    | 4 vCPUs         | PromQL queries + Grafana rendering |
+| **RAM**     | 4GB        | 8GB             | Time series data caching           |
+| **Storage** | 100GB SSD  | 200GB SSD       | Métricas históricas (6-12 meses)   |
+| **Red**     | 1Gbps      | 1Gbps           | Suficiente para scraping           |
+
+---
+
+## 🔧 Consideraciones Técnicas
+
+### 📊 Recolección de Métricas
+
+**Prometheus utiliza modelo pull-based:**
+
+- Scraping automático de endpoints `/metrics`
+- Configuración flexible de intervalos
+- Service discovery automático en GCP
+
+### 🔌 Integración con GCP Services
+
+- **Compute Engine:** Node exporter
+- **Kubernetes (GKE):** Kube-state-metrics
+- **Cloud SQL:** Cloud SQL exporter
+- **Load Balancers:** GCP monitoring API
+- **Custom metrics:** Application instrumentación
+
+### 📈 Escalabilidad
+
+**Horizontal scaling:**
+
+- Federación de múltiples instancias Prometheus
+- Thanos para long-term storage
+- Cortex para multi-tenancy
 
 ---
 
@@ -327,7 +320,7 @@ graph TD
 
 #### **Riesgos Financieros:**
 
-- **Aumentos de precio:** DataDog puede aumentar de $23 a $35 USD/host (+52%)
+- **Aumentos de precio:** DataDog puede aumentar de $15 a $25 USD/host (+67%)
 - **Sin alternativas:** Difícil migrar una vez implementado
 - **Costos ocultos:** Métricas personalizadas incrementan la factura
 
@@ -367,13 +360,13 @@ Herramientas independientes: Prometheus + Grafana (open source)
 1. **🔓 Independencia Tecnológica**
 
    - **Cero vendor lock-in:** Si necesitamos cambiar de GCP a AWS/Azure, Prometheus migra sin modificaciones
-   - **Control total de datos:** Métricas sensibles permanecen en nuestra infraestructura on-premise
+   - **Control total de datos:** Métricas sensibles permanecen en nuestra infraestructura
    - **Estándar industrial:** PromQL es compatible con 50+ herramientas del mercado
    - **Flexibilidad futura:** Podemos adoptar cualquier estrategia multi-cloud sin reescribir monitoreo
 
 2. **💰 Optimización Financiera**
 
-   - **97% de ahorro recurrente** vs DataDog ($80K USD en 3 años)
+   - **73-77% de ahorro recurrente** vs alternativas SaaS
    - **Escalabilidad linear:** Costos crecen solo con infraestructura real
    - **Sin sorpresas en facturación:** Sin cargos por métricas personalizadas
 
@@ -388,107 +381,86 @@ Herramientas independientes: Prometheus + Grafana (open source)
    - **Federación horizontal:** Escala según necesidades reales del negocio
    - **Comunidad activa:** 45,000+ estrellas en GitHub, soporte continuo
 
-### 🏢 Ventaja de Nuestra Infraestructura Híbrida
+### 🎯 **Ventajas de Nuestra Situación Actual**
 
-#### 💰 **Implicaciones de Costos SOLO para Monitoreo**
-
-| Escenario                  | **Prometheus (VM)** | **Prometheus (servidor)** | **DataDog** | **New Relic** |
-| -------------------------- | ------------------- | ------------------------- | ----------- | ------------- |
-| **Setup inicial**          | $2,500 (una vez)    | $3,700 (una vez)          | $0          | $0            |
-| **Costo anual recurrente** | **$0**              | **$0**                    | $22,080     | $24,000       |
-| **Costo 3 años**           | **$2,500**          | **$3,700**                | $80,371     | $87,360       |
-| **Amortización**           | Inmediata           | 2 meses vs DataDog        | -           | -             |
-
-#### 🎯 **Nuestra Ventaja Única**
-
-- **Servidores on-premise:** Ya pagados y disponibles
-- **Conectividad GCP:** Ya establecida vía VPN
-- **Equipo técnico:** Capacidad para manejar open source
-- **Monitoreo no crítico:** Flexibilidad para implementar gradualmente
+- **Servicios en GCP:** Infraestructura cloud establecida
+- **Equipo técnico:** Capacidad para adoptar herramientas open source
+- **Flexibilidad de implementación:** Múltiples opciones de deployment
+- **Control de datos:** Posibilidad de mantener métricas en nuestra infraestructura
 
 ---
 
 ## 📅 Plan de Implementación Recomendado
 
-### Fase 1: Preparación (Semanas 1-2)
+### Fase 1: Preparación
 
-- ✅ Configuración de infraestructura base on-premise o VM
+- ✅ Selección y configuración de infraestructura para monitoreo
 - ✅ Instalación de Prometheus y Grafana
-- ✅ Configuración de conectividad GCP (firewall rules)
+- ✅ Configuración de accesos y firewall rules
 
-### Fase 2: Integración (Semanas 3-4)
+### Fase 2: Integración
 
 - ✅ Configuración de endpoints de métricas en servicios GCP
 - ✅ Setup de dashboards principales en Grafana
 - ✅ Configuración de Alertmanager y reglas básicas
 
-### Fase 3: Optimización (Semanas 5-6)
+### Fase 3: Optimización
 
 - ✅ Capacitación del equipo en PromQL y Grafana
 - ✅ Refinamiento de métricas y alertas
 - ✅ Documentación y procedimientos operativos
 
-### Fase 4: Producción (Semana 7)
+### Fase 4: Producción
 
 - ✅ Monitoreo 24/7 operativo
 - ✅ Evaluación post-implementación
 - ✅ Plan de escalabilidad futura
 
-### 📊 Timeline Visual de Implementación
-
-```mermaid
-gantt
-    title Plan de Implementación Prometheus + Grafana
-    dateFormat  X
-    axisFormat %s
-
-    section Fase 1: Preparación
-    Infraestructura base    :done, phase1a, 0, 1w
-    Instalación P+G         :done, phase1b, after phase1a, 1w
-
-    section Fase 2: Integración
-    Endpoints GCP          :active, phase2a, after phase1b, 1w
-    Dashboards Grafana     :phase2b, after phase2a, 1w
-
-    section Fase 3: Optimización
-    Capacitación equipo    :phase3a, after phase2b, 1w
-    Refinamiento          :phase3b, after phase3a, 1w
-
-    section Fase 4: Producción
-    Go Live               :crit, phase4, after phase3b, 1w
-```
-
----
-
 ## ⚠️ Análisis de Riesgos y Mitigación
 
-### 🔍 Matriz de Riesgos por Solución
+### 🎯 Riesgos Principales por Solución
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4caf50"}}}%%
-quadrantChart
-    title Análisis de Riesgos: Probabilidad vs Impacto
-    x-axis Baja Probabilidad --> Alta Probabilidad
-    y-axis Bajo Impacto --> Alto Impacto
-    quadrant-1 Alto Impacto/Baja Probabilidad
-    quadrant-2 Alto Impacto/Alta Probabilidad
-    quadrant-3 Bajo Impacto/Alta Probabilidad
-    quadrant-4 Bajo Impacto/Baja Probabilidad
+#### **Prometheus + Grafana (Solución Recomendada)**
 
-    "Vendor Lock-in (SaaS)": [0.8, 0.9]
-    "Curva Aprendizaje (Prometheus)": [0.6, 0.3]
-    "Aumentos Precio (DataDog)": [0.7, 0.8]
-    "Disponibilidad Prometheus": [0.2, 0.7]
-    "Escalabilidad Futura": [0.3, 0.5]
-```
+| **Riesgo** | **Probabilidad** | **Impacto** | **Mitigación Específica** |
+|------------|------------------|-------------|----------------------------|
+| **Curva de aprendizaje del equipo** | Media | Bajo | • Capacitación de 40hrs (incluida en costos)<br/>• Documentación técnica completa<br/>• Soporte comunidad CNCF 24/7 |
+| **Complejidad inicial de setup** | Alta | Medio | • Implementación por fases (7 semanas)<br/>• POC en ambiente de desarrollo<br/>• Soporte técnico externo inicial |
+| **Disponibilidad del servicio** | Baja | Alto | • Configuración HA con 2+ instancias<br/>• Backups automatizados diarios<br/>• Monitoring del monitoring (meta-alertas) |
+| **Escalabilidad futura** | Baja | Medio | • Arquitectura federada preparada<br/>• Thanos para storage a largo plazo<br/>• Revisión trimestral de capacity planning |
 
-| Riesgo                          | Probabilidad | Impacto  | Mitigación                                       |
-| ------------------------------- | ------------ | -------- | ------------------------------------------------ |
-| **Curva de aprendizaje**        | Media        | Bajo     | Capacitación estructurada + documentación        |
-| **Complejidad inicial**         | Alta         | Medio    | Implementación gradual + soporte externo         |
-| **Disponibilidad del servicio** | Baja         | Alto     | Configuración HA + backups automatizados         |
-| **Escalabilidad futura**        | Baja         | Medio    | Arquitectura federada + planning capacity        |
-| **Vendor lock-in (SaaS)**       | **Evitado**  | **Alto** | **Prometheus elimina este riesgo completamente** |
+#### **DataDog/New Relic (Alternativas SaaS)**
+
+| **Riesgo** | **Probabilidad** | **Impacto** | **Consecuencia** |
+|------------|------------------|-------------|------------------|
+| **Vendor lock-in tecnológico** | **Alta** | **Crítico** | • Migración futura: 6-12 meses + $15K USD<br/>• Dependencia total del proveedor<br/>• Sin control sobre roadmap del producto |
+| **Aumentos de precio anuales** | Alta | Alto | • Incrementos típicos: 15-25% anual<br/>• Sin alternativas una vez implementado<br/>• Costos imprevisibles a largo plazo |
+| **Límites de métricas custom** | Media | Medio | • Costos adicionales por métrica<br/>• Restricciones en observabilidad<br/>• Facturación por volumen de datos |
+
+### 🛡️ Plan de Mitigación de Riesgos
+
+#### **Fase de Implementación (Semanas 1-7)**
+- **Backup strategy:** Mantener logging básico existente durante transición
+- **Rollback plan:** Capacidad de volver al estado anterior en 24hrs
+- **Testing exhaustivo:** Validación en ambiente no-productivo primero
+
+#### **Operación a Largo Plazo**
+- **Monitoreo de rendimiento:** Alertas sobre la propia infraestructura de monitoreo
+- **Actualizaciones controladas:** Ciclo de updates cada 3 meses con testing
+- **Disaster recovery:** Procedimientos documentados para recuperación completa
+
+#### **Mitigación Financiera**
+- **Presupuesto de contingencia:** 20% adicional para imprevistos del primer año
+- **ROI tracking:** Seguimiento mensual de ahorros vs alternativas SaaS
+- **Escalabilidad predictiva:** Modelado de costos para 2-3 años futuros
+
+### 💡 Factores de Éxito Críticos
+
+1. **Compromiso del equipo técnico** - Dedicación de 2-3 personas durante implementación
+2. **Soporte gerencial** - Respaldo durante curva de aprendizaje inicial  
+3. **Implementación gradual** - No migrar todo al mismo tiempo
+4. **Documentación completa** - Procedimientos operativos desde día uno
+5. **Comunidad y soporte** - Aprovechar ecosistema CNCF y foros especializados
 
 ---
 
@@ -501,13 +473,13 @@ flowchart TD
     START([🎯 Necesidad de Monitoreo<br/>GCP Services]) --> Q1{¿Presupuesto<br/>$20K+ anuales?}
 
     Q1 -->|Sí| Q2{¿Implementación<br/>inmediata < 1 semana?}
-    Q1 -->|No| PROM[✅ Prometheus + Grafana<br/>$2.5K-3.7K una vez]
+    Q1 -->|No| PROM[✅ Prometheus + Grafana<br/>$3.5K una vez]
 
     Q2 -->|Sí| Q3{¿Foco principal<br/>en APM?}
-    Q2 -->|No| Q4{¿Infraestructura<br/>híbrida existente?}
+    Q2 -->|No| Q4{¿Infraestructura<br/>en GCP disponible?}
 
-    Q3 -->|Sí| NR[⚠️ New Relic<br/>$87K en 3 años]
-    Q3 -->|No| DD[⚠️ DataDog<br/>$80K en 3 años]
+    Q3 -->|Sí| NR[⚠️ New Relic<br/>$15K en 3 años]
+    Q3 -->|No| DD[⚠️ DataDog<br/>$13K en 3 años]
 
     Q4 -->|Sí| PROM
     Q4 -->|No| Q5{¿Equipo DevOps<br/>experimentado?}
@@ -515,7 +487,7 @@ flowchart TD
     Q5 -->|Sí| PROM
     Q5 -->|No| DD
 
-    PROM --> RESULT1[🎯 RECOMENDADO<br/>• 97% ahorro<br/>• Independencia total<br/>• Escalabilidad]
+    PROM --> RESULT1[🎯 RECOMENDADO<br/>• 73% ahorro<br/>• Independencia total<br/>• Escalabilidad]
     DD --> RESULT2[⚠️ Premium Option<br/>• Plug & play<br/>• Soporte 24/7<br/>• Vendor lock-in]
     NR --> RESULT3[⚠️ Nicho APM<br/>• Enfoque específico<br/>• Mayor costo<br/>• Lock-in elevado]
 
@@ -527,29 +499,11 @@ flowchart TD
     style RESULT3 fill:#f57c00,color:#fff
 ```
 
-### 📊 Análisis Multi-Criterio por Solución
-
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4caf50"}}}%%
-quadrantChart
-    title Posicionamiento Estratégico de Soluciones
-    x-axis Baja Complejidad --> Alta Complejidad
-    y-axis Bajo Costo --> Alto Costo
-    quadrant-1 Alto Costo/Baja Complejidad
-    quadrant-2 Alto Costo/Alta Complejidad
-    quadrant-3 Bajo Costo/Alta Complejidad
-    quadrant-4 Bajo Costo/Baja Complejidad
-
-    "Prometheus + Grafana": [0.3, 0.1]
-    "DataDog": [0.1, 0.8]
-    "New Relic": [0.2, 0.9]
-```
-
 ### 🎯 **Prometheus + Grafana** - RECOMENDADO
 
 **Ideal para:**
 
-- ✅ **Nuestra situación actual:** Infraestructura híbrida madura
+- ✅ **Nuestra situación actual:** Servicios desplegados en GCP
 - ✅ **Objetivos estratégicos:** Independencia tecnológica y control de costos
 - ✅ **Equipos técnicos:** DevOps con capacidad de adoptar herramientas open-source
 - ✅ **Visión a largo plazo:** Escalabilidad sin sorpresas financieras
@@ -559,7 +513,7 @@ quadrantChart
 **Considerar solo si:**
 
 - ⚠️ Se requiere implementación inmediata (< 1 semana)
-- ⚠️ Presupuesto permite $80K+ USD en 3 años
+- ⚠️ Presupuesto permite $13K+ USD en 3 años
 - ⚠️ Equipo técnico limitado para herramientas open-source
 
 ### 🏢 **New Relic** - Nicho Específico
@@ -568,7 +522,7 @@ quadrantChart
 
 - ⚠️ Foco exclusivo en APM (Application Performance Monitoring)
 - ⚠️ Ya existe ecosistema New Relic en la organización
-- ⚠️ Presupuesto permite $87K+ USD en 3 años
+- ⚠️ Presupuesto permite $15K+ USD en 3 años
 
 ---
 
@@ -576,7 +530,7 @@ quadrantChart
 
 ### 📈 **Impacto Empresarial de la Decisión**
 
-- **Ahorro financiero:** $77K-85K USD en 3 años (según opción hardware)
+- **Ahorro financiero:** $9.6K-11.8K USD en 3 años
 - **Independencia estratégica:** Eliminación de vendor lock-in
 - **Escalabilidad técnica:** Preparación para crecimiento futuro
 - **Competencia técnica:** Dominio de herramientas industry-standard
@@ -586,63 +540,46 @@ quadrantChart
 **Aprobación para implementar Prometheus + Grafana** como plataforma unificada de monitoreo, con:
 
 - **Timeline:** 7 semanas para implementación completa
-- **Budget:** $2,500-3,700 USD inversión única vs $22,080+ USD anuales
-- **ROI:** 2,073% - 3,115% comparado con soluciones SaaS
+- **Budget:** $3,500 USD inversión única vs $13K-15K USD en 3 años
+- **ROI:** 274% comparado con soluciones SaaS
 - **Risk:** Bajo, con plan de mitigación estructurado
 
-### �️ Roadmap Estratégico de Monitoreo
+### 🗺️ Roadmap Estratégico de Monitoreo
 
 ```mermaid
 timeline
     title Evolución de Monitoreo: Prometheus + Grafana
 
-    section Q1 2024 : Implementación
+    section Q1 2025 : Implementación
         Fase 1 Setup       : Infraestructura base
                            : Instalación P+G
         Fase 2 Integración : Endpoints GCP
                            : Dashboards básicos
 
-    section Q2 2024 : Consolidación
+    section Q2 2025 : Consolidación
         Fase 3 Optimización : Capacitación equipo
                             : Alertas avanzadas
         Fase 4 Producción   : Go Live 24/7
                             : Métricas personalizadas
 
-    section Q3-Q4 2024 : Escalabilidad
+    section Q3-Q4 2025 : Escalabilidad
         Expansión          : Nuevos servicios
                           : Federación horizontal
         Automatización     : CI/CD integration
                           : Infrastructure as Code
 
-    section 2025+ : Evolución
+    section 2026+ : Evolución
         Multi-Cloud        : AWS/Azure ready
                           : Vendor independence
         Advanced Analytics : ML-based alerting
                           : Predictive monitoring
 ```
 
-### �📞 **Próximos Pasos Inmediatos**
+### 📞 **Próximos Pasos Inmediatos**
 
 1. **Aprobación gerencial** para proceder con Fase 1
-2. **Decisión de hardware:** VM existente vs servidor dedicado
+2. **Decisión de infraestructura:** GCP self-managed vs GKE vs externa
 3. **Asignación de recursos:** Equipo DevOps para implementación
 4. **Calendario de implementación:** Inicio propuesto próximo mes
 
 ---
-
-### 📊 Comparación Visual de Costos (3 años)
-
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#ff4444"}}}%%
-xychart-beta
-    title "Costo Total de Ownership - 3 años (USD)"
-    x-axis [Prometheus-VM, Prometheus-Server, DataDog, "New Relic"]
-    y-axis "Costo (USD)" 0 --> 90000
-    bar [2500, 3700, 80371, 87360]
-```
-
-```mermaid
-pie title Distribución de Ahorros vs Alternativas SaaS
-    "Prometheus (VM)" : 2500
-    "Ahorros vs DataDog" : 77871
-```
