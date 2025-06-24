@@ -32,11 +32,11 @@ Este documento presenta una evaluación integral entre **Google Cloud CDN** y **
 
 ### 💰 Impacto Financiero Real
 
-| Proveedor               | Costo Anual | Características                |
-|-------------------------|-------------|--------------------------------|
-| **Cloudflare Pro**      | $240        | CDN + WAF + SSL + DDoS incluido |
-| **Google Cloud CDN**    | $960-1,440  | CDN básico + costos adicionales |
-| **Ahorro Cloudflare**   | **75-85%**  | Precio fijo vs variable        |
+| Proveedor             | Costo Anual | Características                 |
+| --------------------- | ----------- | ------------------------------- |
+| **Cloudflare Pro**    | $240        | CDN + WAF + SSL + DDoS incluido |
+| **Google Cloud CDN**  | $960-1,440  | CDN básico + costos adicionales |
+| **Ahorro Cloudflare** | **75-85%**  | Precio fijo vs variable         |
 
 ---
 
@@ -81,6 +81,7 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 | **Soporte Documentado**      | 5%   | 4/5 (80%)        | 5/5 (100%)     |
 
 **📊 Score Final Objetivo:**
+
 - **Google Cloud CDN**: **65/100** - Aceptable con limitaciones
 - **Cloudflare CDN**: **87/100** - **GANADOR CLARO**
 
@@ -91,15 +92,18 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Google Cloud CDN - Precios Oficiales 2025
 
 **Cache Data Transfer Out** (por región):
+
 - **Norte América/Europa**: $0.08/GiB (0-10TB), $0.055/GiB (10-150TB)
 - **América Latina**: $0.09/GiB (0-10TB), $0.06/GiB (10-150TB)
 
 **Costos adicionales obligatorios**:
+
 - **HTTP/HTTPS Requests**: $0.0075 por 10,000 requests
 - **Load Balancer**: $18-36/mes (OBLIGATORIO)
 - **Cloud Armor WAF**: $1/política + $0.50/regla/mes
 
 **Ejemplo real** (500GB + 50M requests):
+
 - Cache transfer: $40/mes
 - Requests: $3.75/mes
 - Load Balancer: $20/mes
@@ -107,12 +111,12 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 
 ### Cloudflare CDN - Planes Oficiales 2025
 
-| Plan           | Precio Mensual | Precio Anual | Incluye                           |
-| -------------- | -------------- | ------------ | --------------------------------- |
-| **Gratuito**   | $0             | $0           | CDN + SSL + DDoS básico           |
-| **Pro**        | $20            | $240         | + WAF + Optimización imágenes     |
-| **Business**   | $200           | $2,400       | + SLA 100% + Bot Management       |
-| **Enterprise** | $5,000+        | $60,000+     | + Soporte 24/7 + Priorización    |
+| Plan           | Precio Mensual | Precio Anual | Incluye                       |
+| -------------- | -------------- | ------------ | ----------------------------- |
+| **Gratuito**   | $0             | $0           | CDN + SSL + DDoS básico       |
+| **Pro**        | $20            | $240         | + WAF + Optimización imágenes |
+| **Business**   | $200           | $2,400       | + SLA 100% + Bot Management   |
+| **Enterprise** | $5,000+        | $60,000+     | + Soporte 24/7 + Priorización |
 
 **🎯 Recomendación de Costos**: Plan Pro ofrece el mejor valor - CDN ilimitado + seguridad completa por $20/mes fijo.
 
@@ -137,6 +141,7 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Google Cloud CDN - Proceso
 
 **Configuración requerida**:
+
 1. ⚙️ Cloud Load Balancer (obligatorio, costo adicional)
 2. 🖥️ Backend Services (configurar servidores)
 3. 🔍 Health Checks (monitoreo)
@@ -147,6 +152,7 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Cloudflare CDN - Proceso
 
 **Configuración requerida**:
+
 1. 🌐 Cambiar DNS (apuntar dominio a Cloudflare)
 2. ✅ ¡Listo! (optimización automática)
 
@@ -154,12 +160,12 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 
 ### Comparativa de Implementación
 
-| Aspecto                | Google Cloud CDN              | Cloudflare CDN          |
-| ---------------------- | ----------------------------- | ----------------------- |
-| **Tiempo estimado**    | 3-5 días                      | 1-2 días                |
-| **Complejidad**        | Alta (requiere Load Balancer) | Baja (solo cambio DNS)  |
-| **Downtime**           | 2-4 horas durante migración   | Cero (con DNS TTL bajo) |
-| **Conocimiento técnico** | Alto                         | Básico                  |
+| Aspecto                  | Google Cloud CDN              | Cloudflare CDN          |
+| ------------------------ | ----------------------------- | ----------------------- |
+| **Tiempo estimado**      | 3-5 días                      | 1-2 días                |
+| **Complejidad**          | Alta (requiere Load Balancer) | Baja (solo cambio DNS)  |
+| **Downtime**             | 2-4 horas durante migración   | Cero (con DNS TTL bajo) |
+| **Conocimiento técnico** | Alto                          | Básico                  |
 
 ---
 
@@ -177,11 +183,11 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 
 ### Costos por Región (500GB/mes)
 
-| País               | Google Cloud CDN     | Cloudflare Pro | Ahorro Cloudflare |
-| ------------------ | -------------------- | -------------- | ----------------- |
-| **España**         | $576 + Load Balancer | $240/año fijo  | -85% ahorro       |
-| **Chile**          | $648 + Load Balancer | $240/año fijo  | -87% ahorro       |
-| **Perú**           | $648 + penalización  | $240/año fijo  | -90% ahorro       |
+| País               | Google Cloud CDN     | Cloudflare Pro | Ahorro Cloudflare   |
+| ------------------ | -------------------- | -------------- | ------------------- |
+| **España**         | $576 + Load Balancer | $240/año fijo  | -85% ahorro         |
+| **Chile**          | $648 + Load Balancer | $240/año fijo  | -87% ahorro         |
+| **Perú**           | $648 + penalización  | $240/año fijo  | -90% ahorro         |
 | **Total 3 países** | ~$2,000-2,500/año    | $240/año fijo  | **Increíble valor** |
 
 ### Recomendación Regional
@@ -189,6 +195,7 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 **Para operaciones en Chile, Perú y España**: **Cloudflare Pro Plan es claramente superior**
 
 **Justificación irrefutable**:
+
 - ✅ Cobertura nativa en los 3 países (especialmente crítico en Perú)
 - ✅ 85% de ahorro en costos vs Google Cloud
 - ✅ Implementación 3x más rápida
@@ -203,11 +210,13 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 #### ✅ Ventajas Estratégicas Comprobadas
 
 1. **Modelo de Precios Predecible**
+
    - Plan Pro: $20/mes fijo (tráfico ilimitado)
    - Sin costos ocultos ni variables impredecibles
    - Implementación: <2 horas vs 2-5 días para GCP
 
 2. **Cobertura Global Superior**
+
    - 320+ ubicaciones vs 100+ de Google Cloud
    - Mejor cobertura en América Latina
    - PoP local en Lima, Perú (factor crítico)
@@ -228,12 +237,12 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 
 ### Recomendación por Tipo de Empresa
 
-| Tipo de Empresa              | Plan Recomendado       | Justificación                    |
-| ---------------------------- | ---------------------- | -------------------------------- |
-| **Startup/Proyecto Personal** | Cloudflare Gratuito   | CDN + SSL + DDoS básico gratis   |
-| **E-commerce Pequeño/Mediano** | **Cloudflare Pro**    | **Mejor valor** - $20/mes        |
-| **Empresa Establecida**      | Cloudflare Pro        | Business solo si SLA requerido   |
-| **Corporación/Enterprise**   | Cloudflare Business   | SLA 100% + soporte premium       |
+| Tipo de Empresa                | Plan Recomendado    | Justificación                  |
+| ------------------------------ | ------------------- | ------------------------------ |
+| **Startup/Proyecto Personal**  | Cloudflare Gratuito | CDN + SSL + DDoS básico gratis |
+| **E-commerce Pequeño/Mediano** | **Cloudflare Pro**  | **Mejor valor** - $20/mes      |
+| **Empresa Establecida**        | Cloudflare Pro      | Business solo si SLA requerido |
+| **Corporación/Enterprise**     | Cloudflare Business | SLA 100% + soporte premium     |
 
 **Para 90% de e-commerce**: Cloudflare Pro es la elección más inteligente.
 
@@ -244,15 +253,18 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Cronograma Recomendado - Cloudflare Pro
 
 #### 🔍 Fase 1: Preparación (Semana 1)
+
 - **Lunes**: Crear cuenta Cloudflare Pro + auditar DNS records
 - **Miércoles**: Configurar entorno de pruebas + métricas baseline
 - **Viernes**: Capacitación del equipo técnico
 
 #### 🧪 Fase 2: Testing (Semanas 2-3)
+
 - **Semana 2**: Implementar subdominios de prueba + Page Rules básicas
 - **Semana 3**: Pruebas de carga + validación completa
 
 #### 🚀 Fase 3: Producción (Mes 2)
+
 - **Semana 1**: Migración gradual + monitoreo intensivo
 - **Semana 2**: Configuración WAF avanzada
 - **Semana 3**: Integración con monitoreo existente
@@ -261,23 +273,27 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Checklist de Implementación
 
 **📋 Preparación**
+
 - [ ] Audit completo de DNS records existentes
 - [ ] Establecimiento de métricas baseline (TTFB, Cache Hit Rate)
 - [ ] Capacitación del equipo en Cloudflare Dashboard
 
 **🧪 Testing**
+
 - [ ] Configuración de subdominios de prueba
 - [ ] Pruebas de rendimiento con GTmetrix, PageSpeed
 - [ ] Load testing con Apache Bench
 - [ ] Validación de funcionalidades críticas
 
 **🚀 Producción**
+
 - [ ] Migración gradual del tráfico
 - [ ] Configuración WAF para e-commerce
 - [ ] Setup de alertas y monitoreo
 - [ ] Optimización de Page Rules
 
 **🔧 Optimización**
+
 - [ ] Evaluación mensual de métricas
 - [ ] Ajustes basados en patrones de tráfico
 - [ ] Documentación de mejores prácticas
@@ -287,18 +303,21 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ## 📋 Próximos Pasos Inmediatos
 
 ### Semana 1
+
 - [ ] Crear cuenta Cloudflare (Pro plan recomendado)
 - [ ] Auditar DNS records actuales
 - [ ] Configurar entorno de pruebas
 - [ ] Establecer métricas baseline
 
 ### Semanas 2-3
+
 - [ ] Implementar Cloudflare CDN en subdominios de prueba
 - [ ] Configurar Page Rules optimizadas para e-commerce
 - [ ] Realizar pruebas de carga y rendimiento
 - [ ] Capacitar equipo técnico
 
 ### Mes 2-3
+
 - [ ] Migración completa a producción
 - [ ] Configuración avanzada de WAF
 - [ ] Integración con sistemas de monitoreo
@@ -311,10 +330,12 @@ Esta comparación evalúa ambas soluciones bajo criterios específicos para e-co
 ### Fuentes de Datos
 
 **Estudios de Caso CDN General**:
+
 - Google Web.dev: Case studies Core Web Vitals
 - Análisis: Implementación CDN vs sin CDN
 
 **Datos Técnicos Comparativos**:
+
 - Cloudflare Network Map oficial
 - Google Cloud CDN Locations oficiales
 - Precios oficiales de ambos proveedores
